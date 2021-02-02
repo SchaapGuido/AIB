@@ -120,6 +120,11 @@ Invoke-WebRequest -Uri 'https://download.mozilla.org/?product=firefox-esr-msi-la
 Invoke-Expression -Command 'msiexec /i c:\temp\FirefoxEsrSetup.msi MaintenanceService=false /quiet'
 Write-Host '*** WVD AIB CUSTOMIZER PHASE *** INSTALL *** Install Mozilla Firefox ESR *** - Exit Code: ' $LASTEXITCODE
 
+Write-Host '*** WVD AIB CUSTOMIZER PHASE *** INSTALL *** Install 7-zip ***'
+Invoke-WebRequest -Uri 'https://www.7-zip.org/a/7z1900-x64.msi' -OutFile 'c:\temp\7z1900-x64.msi'
+Invoke-Expression -Command 'msiexec /i c:\temp\7z1900-x64.msi /quiet'
+Write-Host '*** WVD AIB CUSTOMIZER PHASE *** INSTALL *** Install 7-zip *** - Exit Code: ' $LASTEXITCODE
+
 Write-Host '*** WVD AIB CUSTOMIZER PHASE *** CONFIG *** Install Notepad++ ***'
 Invoke-WebRequest -Uri 'https://github.com/notepad-plus-plus/notepad-plus-plus/releases/download/v7.9.2/npp.7.9.2.Installer.x64.exe' -OutFile 'c:\temp\notepadplusplus.exe'
 Invoke-Expression -Command 'c:\temp\notepadplusplus.exe /S'
