@@ -1,4 +1,6 @@
-﻿<#
+﻿# Variabelen
+
+
 # Maak verbinding met Azure
 Connect-AzAccount
 Select-AzSubscription "DHD Production Subscription (EA)"
@@ -38,23 +40,22 @@ Get-AzProviderFeature -ProviderNamespace Microsoft.VirtualMachineImages -Feature
 Get-AzResourceProvider -ProviderNamespace Microsoft.Compute, Microsoft.KeyVault, Microsoft.Storage, Microsoft.VirtualMachineImages | 
     Where-Object RegistrationState -ne Registered | 
     Register-AzResourceProvider
-#>
+
 ######################################
 #                                    #
 # Registreer de benodigde variabelen #
 #                                    #
 ######################################
 
-$imageResourceGroup = 'rg-wvd-aibtest'
+$imageResourceGroup = 'rg-wvd-ont'
 [int]$timeInt = $(Get-Date -UFormat '%m%d%H%M%S')
 $location = 'WestEurope'
 $imageTemplateName = 'WvdTemplateAIB' + $timeInt
 $runOutputName = 'WvdDistResults'
 $subscriptionID = (Get-AzContext).Subscription.Id
 
-Write-Host "Resource groep aanmaken"
-
 # Create a resource group
+Write-Host "Resource groep aanmaken"
 New-AzResourceGroup -Name $imageResourceGroup -Location $location
 
 ##################################################
@@ -101,7 +102,7 @@ $Content | Out-File -FilePath $myRoleImageCreationPath -Force
 New-AzRoleDefinition -InputFile $myRoleImageCreationPath
 
 Write-Host "Waiting for creation of role definition"
-sleep -Seconds 60
+Start-Sleep -Seconds 60
 
 # Grant the role definition to the image builder service principal.
 $RoleAssignParams = @{
@@ -133,9 +134,9 @@ $GalleryParams = @{
   Name = $imageDefName
   OsState = 'generalized'
   OsType = 'Windows'
-  Publisher = 'myCo'
-  Offer = 'Windows'
-  Sku = 'Win10Ent'
+  Publisher = 'DHD'
+  Offer = 'office-365'
+  Sku = '20h2-evd-o365pp'
 }
 New-AzGalleryImageDefinition @GalleryParams
 
@@ -152,7 +153,7 @@ $SrcObjParams = @{
   SourceTypePlatformImage = $true
   Publisher = 'MicrosoftWindowsDesktop'
   Offer = 'office-365'
-  Sku = '20h2-evd'
+  Sku = '20h2-evd-o365pp'
   Version = 'latest'
 }
 $srcPlatform = New-AzImageBuilderSourceObject @SrcObjParams
@@ -219,7 +220,7 @@ Read-Host "Druk op ENTER als het image template succesvol is aangemaakt om het i
 Start-AzImageBuilderTemplate -ResourceGroupName $imageResourceGroup -Name $imageTemplateName -AsJob
 
 Write-Host "Waiting for start of building"
-sleep -Seconds 60
+Start-Sleep -Seconds 60
 
 do
 {
