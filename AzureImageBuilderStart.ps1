@@ -138,7 +138,7 @@ $GalleryParams = @{
   OsType = 'Windows'
   Publisher = 'DHD'
   Offer = 'office-365'
-  Sku = '20h2-evd-o365pp'
+  Sku = '20h1-evd-o365pp'
 }
 New-AzGalleryImageDefinition @GalleryParams
 
@@ -155,7 +155,7 @@ $SrcObjParams = @{
   SourceTypePlatformImage = $true
   Publisher = 'MicrosoftWindowsDesktop'
   Offer = 'office-365'
-  Sku = '20h2-evd-o365pp'
+  Sku = '20h1-evd-o365pp'
   Version = 'latest'
 }
 $srcPlatform = New-AzImageBuilderSourceObject @SrcObjParams
