@@ -56,7 +56,9 @@ $subscriptionID = (Get-AzContext).Subscription.Id
 
 # Create a resource group
 Write-Host "Resource groep aanmaken"
-New-AzResourceGroup -Name $imageResourceGroup -Location $location
+New-AzResourceGroup -Name $imageResourceGroup `
+  -Location $location `
+  -Tag @{"DHD-Application"="Windows Virtual Desktop (WVD)"; "DHD-Cluster"="Infra basis"; "DHD-Contact"="Guido Schaap;Eduard de Vries"; "DHD-Environment"="Production"; "DHD-Owner"="IT-Infra"}
 
 ##################################################
 #                                                #
