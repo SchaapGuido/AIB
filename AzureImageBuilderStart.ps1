@@ -183,7 +183,7 @@ Write-Host "Image builder customization object aanmaken"
 $ImgCustomParams = @{
   PowerShellCustomizer = $true
   CustomizerName = 'InstallApp'
-  RunElevated = $false
+  RunElevated = $true
   ScriptUri = "https://raw.githubusercontent.com/SchaapGuido/AIB/main/azureimagebuilder.ps1"
 }
 $Customizer = New-AzImageBuilderCustomizerObject @ImgCustomParams
