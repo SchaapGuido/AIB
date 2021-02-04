@@ -95,7 +95,7 @@ Write-Host "User identity json ophalen"
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 Invoke-WebRequest -Uri $myRoleImageCreationUrl -OutFile $myRoleImageCreationPath -UseBasicParsing
 
-Sleep 10
+Start-Sleep 10
 
 $Content = Get-Content -Path $myRoleImageCreationPath -Raw
 $Content = $Content -replace '<subscriptionID>', $subscriptionID
@@ -181,17 +181,12 @@ $disSharedImg = New-AzImageBuilderDistributorObject @disObjParams
 
 Write-Host "Image builder customization object aanmaken"
 
-# https://raw.githubusercontent.com/Everink/AzureImageBuilder/master/Scripts/AzureImageBuilder.ps1
-# https://raw.githubusercontent.com/SchaapGuido/AIB/main/Win10ms_O365v2.ps1
-# https://raw.githubusercontent.com/RoelDU/WVDImaging/master/Win10ms_O365.ps1
-# https://raw.githubusercontent.com/SchaapGuido/AIB/main/azureimagebuilder.ps1
-
 # Create an Azure image builder customization object
 $ImgCustomParams = @{
   PowerShellCustomizer = $true
   CustomizerName = 'InstallApp'
   RunElevated = $true
-  ScriptUri = "https://raw.githubusercontent.com/SchaapGuido/AIB/main/Win10ms_O365Ov01.ps1"
+  ScriptUri = "https://raw.githubusercontent.com/SchaapGuido/AIB/main/GuidoTest.ps1"
 }
 $Customizer = New-AzImageBuilderCustomizerObject @ImgCustomParams
 
@@ -235,7 +230,7 @@ Read-Host "Druk op ENTER als het image template succesvol is aangemaakt om het i
 Start-AzImageBuilderTemplate -ResourceGroupName $imageResourceGroup -Name $imageTemplateName -AsJob
 
 Write-Host "Waiting for start of building"
-sleep -Seconds 60
+Start-Sleep -Seconds 60
 
 do
 {
