@@ -14,17 +14,22 @@ Write-Host '*** WVD AIB CUSTOMIZER PHASE *** CONFIG *** End set locale *** - Exi
 Start-Sleep -Seconds 10
 
 Write-Host '*** WVD AIB CUSTOMIZER PHASE *** CONFIG *** Begin set locale ***'
-Invoke-WebRequest -Uri 'https://aka.ms/fslogix_download' -OutFile 'c:\temp\fslogix.zip'
-DISM.exe /Online /Add-Package /PackagePath:c:\temp\LIPContent\Microsoft-Windows-Client-Language-Pack_x64_nl-nl.cab
+Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/SchaapGuido/AIB/main/Microsoft-Windows-Client-Language-Pack_x64_nl-nl.cab' -OutFile 'Microsoft-Windows-Client-Language-Pack_x64_nl-nl.cab'
+Invoke-Expression -Command 'DISM.exe /Online /Add-Package /PackagePath:c:\temp\Microsoft-Windows-Client-Language-Pack_x64_nl-nl.cab'
 Write-Host '*** WVD AIB CUSTOMIZER PHASE *** CONFIG *** End set locale *** - Exit Code: ' $LASTEXITCODE
 
+Write-Host '*** WVD AIB CUSTOMIZER PHASE *** CONFIG *** Begin download latest Office 365 ***'
+Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/SchaapGuido/AIB/main/setup.exe' -OutFile 'c:\temp\setup.exe'
+Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/SchaapGuido/AIB/main/Config.xml' -OutFile 'c:\temp\Config.xml'
+Start-Sleep -Seconds 10
+Invoke-Expression -Command 'C:\temp\setup.exe /download c:\temp\config.xml'
+Start-Sleep -Seconds 30
+Write-Host '*** WVD AIB CUSTOMIZER PHASE *** CONFIG *** End download latest Office 365 *** - Exit Code: ' $LASTEXITCODE
 
-Write-Host '*** WVD AIB CUSTOMIZER PHASE *** INSTALL *** Install FSLogix ***'
-# Note: Settings for FSLogix can be configured through GPO's)
-Invoke-WebRequest -Uri 'https://aka.ms/fslogix_download' -OutFile 'c:\temp\fslogix.zip'
-Expand-Archive -Path 'C:\temp\fslogix.zip' -DestinationPath 'C:\temp\fslogix\'  -Force
-Invoke-Expression -Command 'C:\temp\fslogix\x64\Release\FSLogixAppsSetup.exe /install /quiet /norestart'
-Write-Host '*** WVD AIB CUSTOMIZER PHASE *** INSTALL *** Install FSLogix *** - Exit Code: ' $LASTEXITCODE
+Write-Host '*** WVD AIB CUSTOMIZER PHASE *** CONFIG *** Begin install latest Office 365 ***'
+Invoke-Expression -Command 'C:\temp\setup.exe /configure c:\temp\config.xml'
+Start-Sleep -Seconds 30
+Write-Host '*** WVD AIB CUSTOMIZER PHASE *** CONFIG *** End Install latest Office 365 *** - Exit Code: ' $LASTEXITCODE
 
 Start-Sleep -Seconds 60
 
