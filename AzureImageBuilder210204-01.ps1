@@ -104,7 +104,7 @@ $Content = $Content -replace 'Azure Image Builder Service Image Creation Role', 
 $Content | Out-File -FilePath $myRoleImageCreationPath -Force
 
 # Create the role definition.
-New-AzRoleDefinition -InputFile $myRoleImageCreationPath
+New-AzRoleDefinition -InputFile $myRoleImageCreationPath -Verbose
 
 do
 {
