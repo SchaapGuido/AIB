@@ -143,8 +143,8 @@ $GalleryParams = @{
   OsState = 'generalized'
   OsType = 'Windows'
   Publisher = 'DHD'
-  Offer = 'office-365'
-  Sku = '20h1-evd-o365pp'
+  Offer = 'Windows10'
+  Sku = '20h1-evd'
 }
 New-AzGalleryImageDefinition @GalleryParams -Verbose
 
@@ -160,8 +160,8 @@ Write-Host "Image builder source object aanmaken"
 $SrcObjParams = @{
   SourceTypePlatformImage = $true
   Publisher = 'MicrosoftWindowsDesktop'
-  Offer = 'office-365'
-  Sku = '20h1-evd-o365pp'
+  Offer = 'Windows-10' #'office-365'
+  Sku = '20h1-evd' #'20h1-evd-o365pp'
   Version = 'latest'
 }
 $srcPlatform = New-AzImageBuilderSourceObject @SrcObjParams
