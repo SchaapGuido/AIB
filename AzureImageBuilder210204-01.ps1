@@ -198,6 +198,9 @@ $ImgTemplateParams = @{
 }
 New-AzImageBuilderTemplate @ImgTemplateParams
 
+$result = Get-AzImageBuilderTemplate -ImageTemplateName $imageTemplateName -ResourceGroupName $imageResourceGroup
+Write-Host "Status: $($result.LastRunStatusRunState), $($result.LastRunStatusRunSubState), $($result.ProvisioningState), $(Get-Date)" 
+
 Write-Host "Aanmaken image builder source object controleren"
 
 # To determine if the template creation process was successful, you can use the following example.
