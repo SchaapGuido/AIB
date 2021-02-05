@@ -44,11 +44,12 @@ Get-AzResourceProvider -ProviderNamespace Microsoft.Compute, Microsoft.KeyVault,
 #                                    #
 ######################################
 
-$imageResourceGroup = 'rg-wvd-aib-ont'
+$imageResourceGroup = 'rg-wvd-aib'
+$myGalleryName = "AIBGallery"
 [int]$timeInt = $(Get-Date -UFormat '%m%d%H%M%S')
 $location = 'WestEurope'
 $imageTemplateName = 'itn-wvd-aib' + $timeInt
-$runOutputName = 'WvdDistResults'
+$runOutputName = 'ron-wvd-aib' + $timeInt
 $subscriptionID = (Get-AzContext).Subscription.Id
 
 Write-Host "Resource groep aanmaken"
@@ -59,6 +60,11 @@ New-AzResourceGroup -Name $imageResourceGroup `
   -Location $location `
   -Tag @{"DHD-Application"="Windows Virtual Desktop (WVD)"; "DHD-Cluster"="Infra basis"; "DHD-Contact"="Guido Schaap;Eduard de Vries"; "DHD-Environment"="Production"; "DHD-Owner"="IT-Infra"}
 
+  # Create the gallery.
+New-AzGallery -Name $myGalleryName `
+-ResourceGroupName $imageResourceGroup `
+-Location $location
+
 ##################################################
 #                                                #
 # Maak een user identity en geef de correcte rol #
@@ -68,8 +74,8 @@ New-AzResourceGroup -Name $imageResourceGroup `
 Write-Host "Nieuwe user identity aanmaken"
 
 # Create variables for the role definition and identity names.
-$imageRoleDefName = "Azure Image Builder Image Def $timeInt"
-$identityName = "AibIdentity" + $timeInt
+$imageRoleDefName = "rdn-wvd-aib"  + $timeInt
+$identityName = "uid-wvd-aib" + $timeInt
 
 # Create a user identity.
 New-AzUserAssignedIdentity -ResourceGroupName $imageResourceGroup -Name $identityName
@@ -106,11 +112,7 @@ $Content | Out-File -FilePath $myRoleImageCreationPath -Force
 # Create the role definition.
 New-AzRoleDefinition -InputFile $myRoleImageCreationPath -Verbose
 
-do
-{
-    $result = Get-AzRoleDefinition -Name $imageRoleDefName
-}
-until ($result)
+start-sleep -Seconds 60
 
 # Grant the role definition to the image builder service principal.
 $RoleAssignParams = @{
@@ -120,23 +122,13 @@ $RoleAssignParams = @{
 }
 New-AzRoleAssignment @RoleAssignParams -Verbose
 
-##################################################
-#                                                #
-# Maak een shared gallery aan                    #
-#                                                #
-##################################################
+Read-Host "Druk op enter om door te gaan als de role assignment correct is aangemaakt."
 
-# Create the gallery.
-$myGalleryName = 'TestGallery3221'
-$imageDefName = 'WindowsVirtualDesktop3221'
-
-New-AzGallery -ResourceGroupName $imageResourceGroup -Name $myGalleryName -Location $location
-
-Write-Host "Nieuwe shared gallery aanmaken, stap 2"
+$imageDefName = "id-wvd-ont-" + $timeInt
 
 # Create a gallery definition.
 $GalleryParams = @{
-  GalleryName = $myGalleryName
+  GalleryName = $imageGalleryName
   ResourceGroupName = $imageResourceGroup
   Location = $location
   Name = $imageDefName
@@ -156,12 +148,14 @@ New-AzGalleryImageDefinition @GalleryParams -Verbose
 
 Write-Host "Image builder source object aanmaken"
 
+#'office-365'
+#'20h1-evd-o365pp'
 # Maak een Azure image builder source object.
 $SrcObjParams = @{
   SourceTypePlatformImage = $true
   Publisher = 'MicrosoftWindowsDesktop'
-  Offer = 'Windows-10' #'office-365'
-  Sku = '20h1-evd' #'20h1-evd-o365pp'
+  Offer = 'Windows-10' 
+  Sku = '20h1-evd' 
   Version = 'latest'
 }
 $srcPlatform = New-AzImageBuilderSourceObject @SrcObjParams
