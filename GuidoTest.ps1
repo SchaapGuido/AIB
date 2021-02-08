@@ -1,8 +1,15 @@
 # Guido's test AIB installer script
+Write-Host '*** WVD AIB CUSTOMIZER PHASE *** Stop the custimization when Error occurs ***'
+$ErroractionPreference='Stop'
+
+Write-Host '*** WVD AIB CUSTOMIZER PHASE *** Set Custimization Script Variables ***'
+# NOTE: Make sure to update these variables for your environment!!! ***
+# Note: Only needed when Onedrive needs to be configured (see below). When using the Marketplace Image including Office this is not required.
+$AADTenantID = "458c4725-6f38-4ae7-8aff-204c3d056d9e"
 
 Write-Host '*** WVD AIB CUSTOMIZER PHASE *** CONFIG *** Create temp folder for software packages. ***'
 New-Item -Path 'C:\temp' `
-    -ItemType Directory -Force
+    -ItemType Directory -Force | Out-Null
 Write-Host '*** WVD AIB CUSTOMIZER PHASE *** CONFIG *** Create temp folder for software packages. *** - Exit Code: ' $LASTEXITCODE
 
 Start-Sleep -Seconds 10
@@ -75,21 +82,19 @@ Invoke-Expression -Command 'C:\temp\OneDriveSetup.exe /allusers'
 Start-Sleep -Seconds 10
 Write-Host '*** WVD AIB CUSTOMIZER PHASE *** CONFIG ONEDRIVE *** Configure OneDrive to start at sign in for all users. ***'
 New-ItemProperty -Path 'HKLM:\Software\Microsoft\Windows\CurrentVersion\Run' -Name 'OneDrive' -Value 'C:\Program Files (x86)\Microsoft OneDrive\OneDrive.exe /background' -Force | Out-Null
+
 Write-Host '*** WVD AIB CUSTOMIZER PHASE *** CONFIG ONEDRIVE *** Silently configure user account ***'
-New-ItemProperty -Path 'HKLM:\SOFTWARE\Policies\Microsoft\OneDrive' -Name 'SilentAccountConfig' -Value '1' -PropertyType DWORD -Force | Out-Null
+$reg_path = "HKLM:\SOFTWARE\Policies\Microsoft\OneDrive"
+if (-Not (Test-Path $reg_path)) { New-Item $reg_path -Force }
+Set-ItemProperty $reg_path -Name SilentAccountConfig -Value 1
+Write-Host '*** WVD AIB CUSTOMIZER PHASE *** CONFIG ONEDRIVE *** Silently configure user account *** - Exit Code: ' $LASTEXITCODE
+
 Write-Host '*** WVD AIB CUSTOMIZER PHASE *** CONFIG ONEDRIVE *** Redirect and move Windows known folders to OneDrive by running the following command. ***'
-New-ItemProperty -Path 'HKLM:\SOFTWARE\Policies\Microsoft\OneDrive' -Name 'KFMSilentOptIn' -Value $AADTenantID -Force | Out-Null
+$reg_path = "HKLM:\SOFTWARE\Policies\Microsoft\OneDrive"
+if (-Not (Test-Path $reg_path)) { New-Item $reg_path -Force }
+Set-ItemProperty $reg_path -Name KFMSilentOptIn -Value $AADTenantID
+Write-Host '*** WVD AIB CUSTOMIZER PHASE *** CONFIG ONEDRIVE *** Redirect and move Windows known folders to OneDrive by running the following command. ***'
 
-Start-Sleep -Seconds 10
-
-Write-Host '*** WVD AIB CUSTOMIZER PHASE *** INSTALL *** Install Teams in Machine mode ***'
-Invoke-WebRequest -Uri 'https://teams.microsoft.com/downloads/desktopurl?env=production&plat=windows&arch=x64&managedInstaller=true&download=true' -OutFile 'c:\temp\Teams.msi'
-Invoke-Expression -Command 'msiexec /i C:\temp\Teams.msi /quiet /l*v C:\temp\teamsinstall.log ALLUSER=1 ALLUSERS=1'
-Write-Host '*** WVD AIB CUSTOMIZER PHASE *** INSTALL *** Install Teams in Machine mode *** - Exit Code: ' $LASTEXITCODE
-Write-Host '*** WVD AIB CUSTOMIZER PHASE *** CONFIG TEAMS *** Configure Teams to start at sign in for all users. ***'
-New-ItemProperty -Path HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run -Name Teams -PropertyType Binary -Value ([byte[]](0x01,0x00,0x00,0x00,0x1a,0x19,0xc3,0xb9,0x62,0x69,0xd5,0x01)) -Force
-Start-Sleep -Seconds 45
-Write-Host '*** WVD AIB CUSTOMIZER PHASE *** CONFIG TEAMS *** Configure Teams to start at sign in for all users. *** - Exit Code: ' $LASTEXITCODE
 
 Start-Sleep -Seconds 10
 

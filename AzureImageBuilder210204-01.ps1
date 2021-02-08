@@ -128,15 +128,15 @@ $imageDefName = "id-wvd-ont-" + $timeInt
 
 # Create a gallery definition.
 $GalleryParams = @{
-  GalleryName = $imageGalleryName
+  GalleryName = $myGalleryName
   ResourceGroupName = $imageResourceGroup
   Location = $location
   Name = $imageDefName
   OsState = 'generalized'
   OsType = 'Windows'
   Publisher = 'DHD'
-  Offer = 'Windows10'
-  Sku = '20h1-evd'
+  Offer = 'office-365'
+  Sku = '20h1-evd-o365pp'
 }
 New-AzGalleryImageDefinition @GalleryParams -Verbose
 
@@ -154,8 +154,8 @@ Write-Host "Image builder source object aanmaken"
 $SrcObjParams = @{
   SourceTypePlatformImage = $true
   Publisher = 'MicrosoftWindowsDesktop'
-  Offer = 'Windows-10' 
-  Sku = '20h1-evd' 
+  Offer = 'office-365' 
+  Sku = '20h1-evd-o365pp' 
   Version = 'latest'
 }
 $srcPlatform = New-AzImageBuilderSourceObject @SrcObjParams
