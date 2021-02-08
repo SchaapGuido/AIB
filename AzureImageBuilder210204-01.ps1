@@ -124,7 +124,9 @@ New-AzRoleAssignment @RoleAssignParams -Verbose
 
 Read-Host "Druk op enter om door te gaan als de role assignment correct is aangemaakt."
 
-$imageDefName = "id-wvd-ont-" + $timeInt
+[int]$timeInt = $(Get-Date -UFormat '%m%d%H%M%S')
+$imageTemplateName = 'itn-wvd-aib' + $timeInt
+$imageDefName = "idn-wvd-aib" + $timeInt
 
 # Create a gallery definition.
 $GalleryParams = @{
@@ -136,9 +138,11 @@ $GalleryParams = @{
   OsType = 'Windows'
   Publisher = 'DHD'
   Offer = 'office-365'
-  Sku = '20h1-evd-o365pp'
+  Sku = '20h1-evd-o365pp-' + $timeInt
 }
 New-AzGalleryImageDefinition @GalleryParams -Verbose
+
+
 
 ##################################################
 #                                                #

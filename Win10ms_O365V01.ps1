@@ -52,6 +52,17 @@ Write-Host '*** WVD AIB CUSTOMIZER PHASE *** CONFIG *** Create temp folder for s
 New-Item -Path 'C:\temp' -ItemType Directory -Force | Out-Null
 Write-Host '*** WVD AIB CUSTOMIZER PHASE *** CONFIG *** Create temp folder for software packages. *** - Exit Code: ' $LASTEXITCODE
 
+Write-Host '*** WVD AIB CUSTOMIZER PHASE *** CONFIG *** Set locale ***'
+Set-WinHomeLocation -GeoId 176
+Set-TimeZone -Id 'W. Europe Standard Time'
+Write-Host '*** WVD AIB CUSTOMIZER PHASE *** CONFIG *** Set locale *** - Exit Code: ' $LASTEXITCODE
+
+Write-Host '*** WVD AIB CUSTOMIZER PHASE *** CONFIG *** Install language pack ***'
+Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/SchaapGuido/AIB/main/Microsoft-Windows-Client-Language-Pack_x64_nl-nl.cab' `
+    -OutFile 'C:\temp\Microsoft-Windows-Client-Language-Pack_x64_nl-nl.cab'
+Add-WindowsPackage -Online -PackagePath 'C:\temp\Microsoft-Windows-Client-Language-Pack_x64_nl-nl.cab' | Out-Null
+Write-Host '*** WVD AIB CUSTOMIZER PHASE *** CONFIG *** Install language pack *** - Exit Code: ' $LASTEXITCODE
+
 Write-Host '*** WVD AIB CUSTOMIZER PHASE *** INSTALL *** Install FSLogix ***'
 # Note: Settings for FSLogix can be configured through GPO's)
 Invoke-WebRequest -Uri 'https://aka.ms/fslogix_download' -OutFile 'c:\temp\fslogix.zip'
