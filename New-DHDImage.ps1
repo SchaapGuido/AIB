@@ -31,10 +31,12 @@ New-AzResourceGroup -Name $ResourceGroupName -Location $LocationName
 $imageName = "WVD-Test"
     
 $Vnet = Get-AzVirtualNetwork -Name $NetworkName `
-    -ResourceGroupName $NetworkResourceGroup `    -Verbose
+    -ResourceGroupName $NetworkResourceGroup `
+    -Verbose
 
 $SingleSubnet = Get-AzVirtualNetworkSubnetConfig -Name $SubnetName `
-    -VirtualNetwork $Vnet `    -Verbose
+    -VirtualNetwork $Vnet `
+    -Verbose
 
 $NIC = New-AzNetworkInterface -Name $NICName `
     -ResourceGroupName $ResourceGroupName `
@@ -46,22 +48,26 @@ $NIC = New-AzNetworkInterface -Name $NICName `
 $Credential = New-Object System.Management.Automation.PSCredential ($VMLocalAdminUser, $VMLocalAdminSecurePassword);
     
 $VirtualMachine = New-AzVMConfig -VMName $VMName `
-    -VMSize $VMSize `    -Verbose
+    -VMSize $VMSize `
+    -Verbose
 
 $VirtualMachine = Set-AzVMOperatingSystem -VM $VirtualMachine -Windows `
     -ComputerName $ComputerName `
     -Credential $Credential `
     -ProvisionVMAgent `
-    -EnableAutoUpdate `    -Verbose
+    -EnableAutoUpdate `
+    -Verbose
 
 $VirtualMachine = Add-AzVMNetworkInterface -VM $VirtualMachine `
-    -Id $NIC.Id `    -Verbose
+    -Id $NIC.Id `
+    -Verbose
 
 $VirtualMachine = Set-AzVMSourceImage -VM $VirtualMachine `
     -PublisherName $ImagePublisher `
     -Offer $ImageOffer `
     -Skus $ImageSKU `
-    -Version latest `    -Verbose
+    -Version latest `
+    -Verbose
     
 New-AzVM -ResourceGroupName $ResourceGroupName `
     -Location $LocationName `
@@ -72,7 +78,7 @@ New-AzVM -ResourceGroupName $ResourceGroupName `
 Set-AzVMCustomScriptExtension -ResourceGroupName $ResourceGroupName `
     -VMName $VMName `
     -Location $LocationName `
-    -FileUri "https://raw.githubusercontent.com/SchaapGuido/AIB/main/Win10ms_O365V01.ps1" `
+    -FileUri "https://raw.githubusercontent.com/SchaapGuido/AIB/main/Win10ms_O365v01.ps1" `
     -Run 'Win10ms_O365V01.ps1' `
     -Name 'InstallerScript'
 
