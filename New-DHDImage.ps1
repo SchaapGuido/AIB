@@ -19,9 +19,6 @@ $ImagePublisher = "MicrosoftWindowsDesktop"
 $ImageOffer = "office-365"
 $ImageSKU = "20h1-evd-o365pp"
 
-# Windows Virtual Desktop settings
-$wvdWorkspace = "DHDSPUD"
-
 # Tags settings
 $CreatedOnDate = Get-Date -Format g
 $tags = @{

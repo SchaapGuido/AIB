@@ -2,25 +2,27 @@
 $imageResourceGroup = 'RG-WVD-AIB-ONT'
 $location = 'WestEurope'
 $subscriptionID = (Get-AzContext).Subscription.Id
-
-# ImageBuilderTemplate settings
 $imageBuilderTemplateName = 'IBT-WVD-AIB-ONT' + $timeInt
 $runOutputName = 'RON-WVD-AIB-ONT'
-
-# Role definition settings
 $imageRoleDefName = "RD-WVD-AIB-ONT"
 $identityName = "UAI-WVD-AIB-ONT"
-
-# Gallery settings
 $myGalleryName = 'AIBGallery'
 $imageDefName = 'GID-WVD-AIB-ONT' + $timeInt
-
-# GitHub settings
 $gitParentPath = "https://raw.githubusercontent.com/SchaapGuido/AIB/main/"
+$roleDefinitionTemplate = "aibRoleImageCreation.json"
+
+function Write-Logline ($logMessage)
+{
+  $timeStamp = get-date -UFormat %H%M%S-%d%m%y
+  $logLine = $timeStamp + " - " + $logMessage
+  Write-Output $logLine
+}
+
+Write-Logline -logMessage "Azure image builder script started"
 
 # timestamp
 [int]$timeInt = $(Get-Date -UFormat '%m%d%H%M%S')
-
+<#
 # Maak verbinding met Azure
 Connect-AzAccount
 Select-AzSubscription "DHD Production Subscription (EA)"
@@ -35,18 +37,20 @@ Install-Module -Name Az.ImageBuilder
 Import-Module -Name Az.ImageBuilder
 Install-Module -Name Az.ManagedServiceIdentity
 Import-Module -Name Az.ManagedServiceIdentity
+#>
 
-# Check de status van de feature registratie.
+Write-Logline -logMessage "Checking status of provider features"
 Get-AzProviderFeature -ProviderNamespace Microsoft.VirtualMachineImages `
   -FeatureName VirtualMachineTemplatePreview |
     Where-Object RegistrationState -ne Registered |
     Register-AzProviderFeature
 
+Write-Logline -logMessage "Checking status of resource providers"
 Get-AzResourceProvider -ProviderNamespace Microsoft.Compute, Microsoft.KeyVault, Microsoft.Storage, Microsoft.VirtualMachineImages | 
     Where-Object RegistrationState -ne Registered | 
     Register-AzResourceProvider
 
-# Create resource group if needed
+Write-Logline -logMessage "Checking resource group"
 Get-AzResourceGroup -Name $imageResourceGroup `
   -ErrorVariable notPresent `
   -ErrorAction SilentlyContinue
@@ -57,6 +61,7 @@ if ($notPresent)
   -Tag @{"DHD-Application"="Windows Virtual Desktop (WVD)"; "DHD-Cluster"="Infra basis"; "DHD-Contact"="Guido Schaap;Eduard de Vries"; "DHD-Environment"="Production"; "DHD-Owner"="IT-Infra"}
 }
 
+Write-Logline -logMessage "Checking status of user assigned identity"
 Get-AzUserAssignedIdentity -ResourceGroupName $imageResourceGroup `
   -Name $identityName `
   -ErrorVariable notPresent `
@@ -70,42 +75,39 @@ if ($notPresent) {
 $identityNameResourceId = (Get-AzUserAssignedIdentity -ResourceGroupName $imageResourceGroup -Name $identityName).Id
 $identityNamePrincipalId = (Get-AzUserAssignedIdentity -ResourceGroupName $imageResourceGroup -Name $identityName).PrincipalId
 
+Write-Logline -logMessage "Downloading json for role definition"
 # Download .json config file and modify it based on the settings defined in this article.
-$myRoleImageCreationUrl = 'https://raw.githubusercontent.com/danielsollondon/azvmimagebuilder/master/solutions/12_Creating_AIB_Security_Roles/aibRoleImageCreation.json'
-$myRoleImageCreationPath = "$env:TEMP\myRoleImageCreation.json"
-
+$roleImageCreationUrl = $gitParentPath + $roleDefinitionTemplate
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-Invoke-WebRequest -Uri $myRoleImageCreationUrl -OutFile $myRoleImageCreationPath -UseBasicParsing
-
-Sleep 10
-
-$Content = Get-Content -Path $myRoleImageCreationPath -Raw
+$Content = Invoke-WebRequest -Uri $roleImageCreationUrl -UseBasicParsing
 $Content = $Content -replace '<subscriptionID>', $subscriptionID
 $Content = $Content -replace '<rgName>', $imageResourceGroup
 $Content = $Content -replace 'Azure Image Builder Service Image Creation Role', $imageRoleDefName
 $Content | Out-File -FilePath $myRoleImageCreationPath -Force
 
-# Create the role definition.
-New-AzRoleDefinition -InputFile $myRoleImageCreationPath
-
-do
-{
-    $result = Get-AzRoleDefinition -Name $imageRoleDefName
+Write-Logline -logMessage "Checking role definition"
+Get-AzRoleDefinition -Name $imageRoleDefName `
+  -ErrorVariable notPresent `
+  -ErrorAction SilentlyContinue
+if ($notPresent) {
+  New-AzRoleDefinition -InputFile $myRoleImageCreationPath
+} else {
+  Remove-AzRoleDefinition -Name $imageRoleDefName `
+    -Force
+    New-AzRoleDefinition -InputFile $myRoleImageCreationPath
 }
-until ($result)
 
-# Grant the role definition to the image builder service principal.
+Write-Logline -logMessage "Grant the role definition to the image builder service principal"
 $RoleAssignParams = @{
   ObjectId = $identityNamePrincipalId
   RoleDefinitionName = $imageRoleDefName
   Scope = "/subscriptions/$subscriptionID/resourceGroups/$imageResourceGroup"
 }
-New-AzRoleAssignment @RoleAssignParams -Verbose
+New-AzRoleAssignment @RoleAssignParams
 
-# Create the gallery.
+Write-Logline -logMessage "Create the gallery"
 Get-AzGallery -ResourceGroupName $imageResourceGroup `
   -Name $myGalleryName `
-  -Location $location `
   -ErrorVariable notPresent `
   -ErrorAction SilentlyContinue
 
@@ -113,7 +115,7 @@ if ($notPresent) {
   New-AzGallery -ResourceGroupName $imageResourceGroup -Name $myGalleryName -Location $location
 }
 
-# Create a gallery definition.
+Write-Logline -logMessage "Create a gallery definition"
 $GalleryParams = @{
   GalleryName = $myGalleryName
   ResourceGroupName = $imageResourceGroup
@@ -125,17 +127,22 @@ $GalleryParams = @{
   Offer = 'office-365'
   Sku = '20h1-evd-o365pp'
 }
-Get-AzGalleryImageDefinition @GalleryParams `
--ErrorVariable notPresent `
--ErrorAction SilentlyContinue
+Get-AzGalleryImageDefinition -Name $imageDefName `
+  -ResourceGroupName $imageResourceGroup `
+  -GalleryName $myGalleryName `
+  -ErrorVariable notPresent `
+  -ErrorAction SilentlyContinue
 if ($notPresent) {
   New-AzGalleryImageDefinition @GalleryParams
 } else {
-  Remove-AzGalleryImageDefinition @GalleryParams -Force
+  Remove-AzGalleryImageDefinition -Name $imageDefName `
+  -ResourceGroupName $imageResourceGroup `
+  -GalleryName $myGalleryName `
+  -Force
   New-AzGalleryImageDefinition @GalleryParams
 }
 
-# Create Azure image builder source object.
+Write-Logline -logMessage "Create Azure image builder source object"
 $SrcObjParams = @{
   SourceTypePlatformImage = $true
   Publisher = 'MicrosoftWindowsDesktop'
@@ -145,7 +152,7 @@ $SrcObjParams = @{
 }
 $srcPlatform = New-AzImageBuilderSourceObject @SrcObjParams
 
-# Create Azure image builder distributor object.
+Write-Logline -logMessage "Create Azure image builder distributor object"
 $disObjParams = @{
   SharedImageDistributor = $true
   ArtifactTag = @{tag='dis-share'}
@@ -156,7 +163,7 @@ $disObjParams = @{
 }
 $disSharedImg = New-AzImageBuilderDistributorObject @disObjParams
 
-# Create an Azure image builder customization object
+Write-Logline -logMessage "Create an Azure image builder customization object"
 $ImgCustomParams = @{
   PowerShellCustomizer = $true
   CustomizerName = 'InstallApp'
@@ -165,7 +172,7 @@ $ImgCustomParams = @{
 }
 $Customizer = New-AzImageBuilderCustomizerObject @ImgCustomParams
 
-# Maak een Azure image builder template.
+Write-Logline -logMessage "Create Azure image builder template"
 $ImgTemplateParams = @{
   ImageTemplateName = $imageTemplateName
   ResourceGroupName = $imageResourceGroup
@@ -186,33 +193,22 @@ if ($notPresent) {
   New-AzImageBuilderTemplate @ImgTemplateParams
 }
 
-$imageBuilderTemplateResult = Get-AzImageBuilderTemplate -ImageTemplateName $imageTemplateName -ResourceGroupName $imageResourceGroup
+$builderResult = Get-AzImageBuilderTemplate -ImageTemplateName $imageTemplateName -ResourceGroupName $imageResourceGroup
 
-<#
-
-
-# Remove-AzImageBuilderTemplate -ImageTemplateName $imageTemplateName -ResourceGroupName $imageResourceGroup
-
-##################################################
-#                                                #
-# Start de build van het nieuwe image            #
-#                                                #
-##################################################
-
-Read-Host "Druk op ENTER als het image template succesvol is aangemaakt om het image aanmaken, druk op CTRL + C om het aanmaken af te breken"
-
-# Submit the image configuration to the VM image builder service
-# Dit kan lang duren, meestal niet langer dan een uur
-Start-AzImageBuilderTemplate -ResourceGroupName $imageResourceGroup -Name $imageTemplateName -AsJob
-
-Write-Host "Waiting for start of building"
-sleep -Seconds 60
+if ($builderResult.ProvisioningState -eq "Succeeded") {
+  Write-Logline -logMessage "Create Azure image builder image"
+  Start-AzImageBuilderTemplate -ResourceGroupName $imageResourceGroup -Name $imageTemplateName
+}
+else {
+  Write-Warning "Builder result is $($builderResult.ProvisioningState)"
+}
 
 do
 {
-    Start-Sleep -Seconds 30
+    Start-Sleep -Seconds 300
     $result = Get-AzImageBuilderTemplate -ImageTemplateName $imageTemplateName -ResourceGroupName $imageResourceGroup
-    Write-Host "Status: $($result.LastRunStatusRunState), $($result.LastRunStatusRunSubState), $(Get-Date)"    
+    $logMessage = "Status: $($result.LastRunStatusRunState), $($result.LastRunStatusRunSubState)"
+    Write-Logline -logMessage $logMessage
 }
 until ($result.LastRunStatusRunState -ne "Running")
 
