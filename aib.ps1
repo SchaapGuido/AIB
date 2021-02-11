@@ -38,7 +38,7 @@ $SrcObjParams = @{
     PowerShellCustomizer = $true
     CustomizerName = 'InstallApp'
     RunElevated = $true
-    ScriptUri = "https://raw.githubusercontent.com/SchaapGuido/AIB/main/Win10ms_O365v0_2.ps1"
+    ScriptUri = "https://raw.githubusercontent.com/SchaapGuido/AIB/main/Win10ms_O365v0_3.ps1"
   }
   $Customizer = New-AzImageBuilderCustomizerObject @ImgCustomParams
 
@@ -55,15 +55,24 @@ $SrcObjParams = @{
   Write-Output "Creating image builder template..."
   New-AzImageBuilderTemplate @ImgTemplateParams
 
+  do
+  {
+      Start-Sleep -Seconds 30
+      Get-AzImageBuilderTemplate -ImageTemplateName $imageTemplateName -ResourceGroupName $imageResourceGroup |
+      Select-Object -Property Name, LastRunStatusRunState, LastRunStatusMessage, ProvisioningState
+      Write-Output "Status: $($result.LastRunStatusRunState), $($result.LastRunStatusRunSubState)"
+  }
+  until ($result.LastRunStatusRunState -ne "Running")
+
   if ($result.ProvisioningState -eq "Succeeded")
   {
     Write-Output "Creating image..."
     Start-AzImageBuilderTemplate -ResourceGroupName $imageResourceGroup -Name $imageTemplateName
     do
     {
-        Start-Sleep -Seconds 30
+        Start-Sleep -Seconds 60
         $result = Get-AzImageBuilderTemplate -ImageTemplateName $imageTemplateName -ResourceGroupName $imageResourceGroup
-        Write-Output "Status: $($result.LastRunStatusRunState), $($result.LastRunStatusRunSubState)"
+        Write-Output "Status: $($result.LastRunStatusRunState), $($result.LastRunStatusRunSubState), $(Get-Date -UFormat "%H:%M:%S")"
     }
     until ($result.LastRunStatusRunState -ne "Running")
   }
