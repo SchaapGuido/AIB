@@ -187,7 +187,9 @@ New-ItemProperty -Path HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\
 Start-Sleep -Seconds 45
 Write-Host '*** WVD AIB CUSTOMIZER PHASE *** CONFIG TEAMS *** Configure Teams to start at sign in for all users. *** - Exit Code: ' $LASTEXITCODE
 
+Write-Host '*** WVD AIB CUSTOMIZER PHASE *** Start Sleep ***'
 Start-Sleep -Seconds 600
+Write-Host '*** WVD AIB CUSTOMIZER PHASE *** Start Sleep ***'
 
 Write-Host '*** WVD AIB CUSTOMIZER PHASE *** CONFIG *** Deleting temp folder. ***'
 Get-ChildItem -Path 'C:\temp' -Recurse | Remove-Item -Recurse -Force | Out-Null
