@@ -38,7 +38,7 @@ $SrcObjParams = @{
     PowerShellCustomizer = $true
     CustomizerName = 'InstallApp'
     RunElevated = $true
-    ScriptUri = "https://raw.githubusercontent.com/SchaapGuido/AIB/main/Win10ms_O365v0_3.ps1"
+    ScriptUri = "https://raw.githubusercontent.com/SchaapGuido/AIB/main/Win10ms_O365v0_0.ps1"
   }
   $Customizer = New-AzImageBuilderCustomizerObject @ImgCustomParams
 
@@ -57,17 +57,16 @@ $SrcObjParams = @{
 
   do
   {
-      Start-Sleep -Seconds 30
+      Start-Sleep -Seconds 10
       Get-AzImageBuilderTemplate -ImageTemplateName $imageTemplateName -ResourceGroupName $imageResourceGroup |
       Select-Object -Property Name, LastRunStatusRunState, LastRunStatusMessage, ProvisioningState
-      Write-Output "Status: $($result.LastRunStatusRunState), $($result.LastRunStatusRunSubState)"
   }
-  until ($result.LastRunStatusRunState -ne "Running")
+  until ($result.ProvisioningState)
 
   if ($result.ProvisioningState -eq "Succeeded")
   {
     Write-Output "Creating image..."
-    Start-AzImageBuilderTemplate -ResourceGroupName $imageResourceGroup -Name $imageTemplateName
+    Start-AzImageBuilderTemplate -ResourceGroupName $imageResourceGroup -Name $imageTemplateName -AsJob
     do
     {
         Start-Sleep -Seconds 60
@@ -85,3 +84,5 @@ $SrcObjParams = @{
   Write-Output "Removing image builder template..."
   Remove-AzImageBuilderTemplate -ResourceGroupName $imageResourceGroup -ImageTemplateName $imageTemplateName
   Write-Output "AIB script ended."
+
+  #Stop-AzImageBuilderTemplate -ImageTemplateName $imageTemplateName -ResourceGroupName $imageResourceGroup
