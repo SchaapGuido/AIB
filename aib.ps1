@@ -53,7 +53,7 @@ $SrcObjParams = @{
     UserAssignedIdentityId = $identityNameResourceId
   }
   Write-Output "Creating image builder template..."
-  New-AzImageBuilderTemplate @ImgTemplateParams
+  New-AzImageBuilderTemplate @ImgTemplateParams -AsJob
 
   do
   {
@@ -62,7 +62,7 @@ $SrcObjParams = @{
       Select-Object -Property Name, LastRunStatusRunState, LastRunStatusMessage, ProvisioningState, ProvisioningErrorMessage
       Write-Output $result
   }
-  until ($result.ProvisioningState)
+  until ($result.ProvisioningState -ne "Creating")
 
   if ($result.ProvisioningState -eq "Succeeded")
   {
