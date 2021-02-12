@@ -38,7 +38,7 @@ $SrcObjParams = @{
     PowerShellCustomizer = $true
     CustomizerName = 'InstallApp'
     RunElevated = $true
-    ScriptUri = "https://raw.githubusercontent.com/SchaapGuido/AIB/main/Win10ms_O365v0_0.ps1"
+    ScriptUri = "https://raw.githubusercontent.com/SchaapGuido/AIB/main/Win10ms_O365v0_3.ps1"
   }
   $Customizer = New-AzImageBuilderCustomizerObject @ImgCustomParams
 
