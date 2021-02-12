@@ -132,4 +132,8 @@ Write-Host '*** WVD AIB CUSTOMIZER PHASE *** SET OS REGKEY *** Fix Watson crashe
 Remove-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows\Windows Error Reporting' -Name "CorporateWerServer*" | Out-Null
 Write-Host '*** WVD AIB CUSTOMIZER PHASE *** SET OS REGKEY *** Fix Watson crashes *** - Exit Code: ' $LASTEXITCODE
 
+Write-Host '*** WVD AIB CUSTOMIZER PHASE *** Start Sleep ***'
+Start-Sleep -Seconds 600
+Write-Host '*** WVD AIB CUSTOMIZER PHASE *** Start Sleep ***'
+
 Write-Host '*** WVD AIB CUSTOMIZER PHASE ********************* END *************************'
