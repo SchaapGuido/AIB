@@ -60,7 +60,7 @@ $SrcObjParams = @{
       Start-Sleep -Seconds 10
       $result = Get-AzImageBuilderTemplate -ImageTemplateName $imageTemplateName -ResourceGroupName $imageResourceGroup |
       Select-Object -Property Name, LastRunStatusRunState, LastRunStatusMessage, ProvisioningState, ProvisioningErrorMessage
-      Write-Output $result
+      Write-Output $result.ProvisioningState
   }
   until ($result.ProvisioningState -ne "Creating")
 
