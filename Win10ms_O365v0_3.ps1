@@ -52,6 +52,14 @@ Write-Host '*** WVD AIB CUSTOMIZER PHASE *** CONFIG *** Create temp folder for s
 New-Item -Path 'C:\temp' -ItemType Directory -Force | Out-Null
 Write-Host '*** WVD AIB CUSTOMIZER PHASE *** CONFIG *** Create temp folder for software packages. *** - Exit Code: ' $LASTEXITCODE
 
+Write-Host '*** WVD AIB CUSTOMIZER PHASE *** INSTALL *** Install FSLogix ***'
+# Note: Settings for FSLogix can be configured through GPO's)
+Invoke-WebRequest -Uri 'https://aka.ms/fslogix_download' -OutFile 'c:\temp\fslogix.zip'
+Expand-Archive -Path 'C:\temp\fslogix.zip' -DestinationPath 'C:\temp\fslogix\'  -Force
+Invoke-Expression -Command 'C:\temp\fslogix\x64\Release\FSLogixAppsSetup.exe /install /quiet /norestart'
+Start-Sleep -Seconds 10
+Write-Host '*** WVD AIB CUSTOMIZER PHASE *** INSTALL *** Install FSLogix *** - Exit Code: ' $LASTEXITCODE
+
 Write-Host '*** WVD AIB CUSTOMIZER PHASE *** CONFIG *** Install language pack ***'
 ##Disable Language Pack Cleanup##
 Disable-ScheduledTask -TaskPath "\Microsoft\Windows\AppxDeploymentClient\" -TaskName "Pre-staged app cleanup"
@@ -59,7 +67,7 @@ Disable-ScheduledTask -TaskPath "\Microsoft\Windows\AppxDeploymentClient\" -Task
 Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/SchaapGuido/AIB/main/Microsoft-Windows-Client-Language-Pack_x64_nl-nl.cab' -OutFile 'c:\temp\Microsoft-Windows-Client-Language-Pack_x64_nl-nl.cab'
 Add-WindowsPackage -Online -PackagePath c:\temp\Microsoft-Windows-Client-Language-Pack_x64_nl-nl.cab
 $LanguageList = Get-WinUserLanguageList
-$LanguageList.Add("nl-nl")
+$LanguageList.Add("nl-NL")
 Set-WinUserLanguageList $LanguageList -force
 Write-Host '*** WVD AIB CUSTOMIZER PHASE *** CONFIG *** Install language pack ***'
 
@@ -89,10 +97,20 @@ New-ItemProperty -Path HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\
 Start-Sleep -Seconds 45
 Write-Host '*** WVD AIB CUSTOMIZER PHASE *** CONFIG TEAMS *** Configure Teams to start at sign in for all users. *** - Exit Code: ' $LASTEXITCODE
 
-Write-Host '*** WVD AIB CUSTOMIZER PHASE *** CONFIG *** Install Notepad++ ***' 
+Write-Host '*** WVD AIB CUSTOMIZER PHASE *** INSTALL *** Install KeePass ***' 
+Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/SchaapGuido/AIB/main/KeePass-2.47.msi' -OutFile 'c:\temp\KeePass-2.47.msi'
+Invoke-Expression -Command 'msiexec /i c:\temp\KeePass-2.47.msi /quiet'
+Write-Host '*** WVD AIB CUSTOMIZER PHASE *** INSTALL *** Install KeePass *** - Exit Code: ' $LASTEXITCODE
+
+Write-Host '*** WVD AIB CUSTOMIZER PHASE *** INSTALL *** Install Notepad++ ***' 
 Invoke-WebRequest -Uri 'https://github.com/notepad-plus-plus/notepad-plus-plus/releases/download/v7.9.2/npp.7.9.2.Installer.x64.exe' -OutFile 'c:\temp\notepadplusplus.exe'
+<<<<<<< HEAD
 Start-Process -Wait -FilePath c:\temp\notepadplusplus.exe -ArgumentList "/S"
 Write-Host '*** WVD AIB CUSTOMIZER PHASE *** CONFIG TEAMS *** Install Notepad++ *** - Exit Code: ' $LASTEXITCODE
+=======
+Invoke-Expression -Command 'c:\temp\notepadplusplus.exe /S'
+Write-Host '*** WVD AIB CUSTOMIZER PHASE *** INSTALL *** Install Notepad++ *** - Exit Code: ' $LASTEXITCODE
+>>>>>>> 9dfaa31e7e22be70f442a6d99c6504ec377c336f
 
 Write-Host '*** WVD AIB CUSTOMIZER PHASE *** INSTALL *** Install 7-zip ***'
 Invoke-WebRequest -Uri 'https://www.7-zip.org/a/7z1900-x64.msi' -OutFile 'c:\temp\7z1900-x64.msi'
@@ -109,6 +127,7 @@ Invoke-WebRequest -Uri 'http://go.microsoft.com/fwlink/?LinkID=2093437' -OutFile
 Start-Process -Wait -FilePath c:\temp\MicrosoftEdgeEnterpriseX64.msi -ArgumentList "/quiet"
 Write-Host '*** WVD AIB CUSTOMIZER PHASE *** INSTALL *** Install Microsoft Edge Enterprise *** - Exit Code: ' $LASTEXITCODE
 
+<<<<<<< HEAD
 Write-Host '*** WVD AIB CUSTOMIZER PHASE *** INSTALL *** Install FSLogix ***'
 # Note: Settings for FSLogix can be configured through GPO's)
 Invoke-WebRequest -Uri 'https://aka.ms/fslogix_download' -OutFile 'c:\temp\fslogix.zip'
@@ -117,6 +136,8 @@ Start-Process -Wait -FilePath C:\temp\fslogix\x64\Release\FSLogixAppsSetup.exe -
 Start-Sleep -Seconds 10
 Write-Host '*** WVD AIB CUSTOMIZER PHASE *** INSTALL *** Install FSLogix *** - Exit Code: ' $LASTEXITCODE
 
+=======
+>>>>>>> 9dfaa31e7e22be70f442a6d99c6504ec377c336f
 Write-Host '*** WVD AIB CUSTOMIZER PHASE *** START OS CONFIG *** Update the recommended OS configuration ***'
 Write-Host '*** WVD AIB CUSTOMIZER PHASE *** SET OS REGKEY *** Disable Automatic Updates ***'
 New-ItemProperty -Path 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU' -Name 'NoAutoUpdate' -Value '1' -PropertyType DWORD -Force | Out-Null
@@ -134,5 +155,18 @@ Write-Host '*** WVD AIB CUSTOMIZER PHASE *** SET OS REGKEY *** Disable Storage S
 Write-Host '*** WVD AIB CUSTOMIZER PHASE *** SET OS REGKEY *** Fix Watson crashes ***'
 Remove-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows\Windows Error Reporting' -Name "CorporateWerServer*" | Out-Null
 Write-Host '*** WVD AIB CUSTOMIZER PHASE *** SET OS REGKEY *** Fix Watson crashes *** - Exit Code: ' $LASTEXITCODE
+
+Write-Host '*** WVD AIB CUSTOMIZER PHASE *** Start Sleep 10 min ***'
+Start-Sleep -Seconds 600
+Write-Host '*** WVD AIB CUSTOMIZER PHASE *** Start Sleep 10 min ***'
+
+Write-Host '*** WVD AIB CUSTOMIZER PHASE *** CONFIG *** Deleting temp folder. ***'
+Get-ChildItem -Path 'C:\temp' -Recurse | Remove-Item -Recurse -Force | Out-Null
+Remove-Item -Path 'C:\temp' -Force | Out-Null
+Write-Host '*** WVD AIB CUSTOMIZER PHASE *** CONFIG *** Deleting temp folder. *** - Exit Code: ' $LASTEXITCODE
+
+Write-Host '*** WVD AIB CUSTOMIZER PHASE *** Start Sleep 5 min ***'
+Start-Sleep -Seconds 300
+Write-Host '*** WVD AIB CUSTOMIZER PHASE *** Start Sleep 5 min ***'
 
 Write-Host '*** WVD AIB CUSTOMIZER PHASE ********************* END *************************'

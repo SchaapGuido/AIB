@@ -38,7 +38,7 @@ $SrcObjParams = @{
     PowerShellCustomizer = $true
     CustomizerName = 'InstallApp'
     RunElevated = $true
-    ScriptUri = "https://raw.githubusercontent.com/SchaapGuido/AIB/main/Win10ms_O365v0_0.ps1"
+    ScriptUri = "https://raw.githubusercontent.com/SchaapGuido/AIB/main/Win10ms_O365v0_3.ps1"
   }
   $Customizer = New-AzImageBuilderCustomizerObject @ImgCustomParams
 
@@ -53,16 +53,16 @@ $SrcObjParams = @{
     UserAssignedIdentityId = $identityNameResourceId
   }
   Write-Output "Creating image builder template..."
-  New-AzImageBuilderTemplate @ImgTemplateParams
+  New-AzImageBuilderTemplate @ImgTemplateParams -AsJob
 
   do
   {
       Start-Sleep -Seconds 10
       $result = Get-AzImageBuilderTemplate -ImageTemplateName $imageTemplateName -ResourceGroupName $imageResourceGroup |
       Select-Object -Property Name, LastRunStatusRunState, LastRunStatusMessage, ProvisioningState, ProvisioningErrorMessage
-      Write-Output $result
+      Write-Output $result.ProvisioningState
   }
-  until ($result.ProvisioningState)
+  until ($result.ProvisioningState -ne "Creating")
 
   if ($result.ProvisioningState -eq "Succeeded")
   {
