@@ -3,10 +3,10 @@
 $VMLocalAdminUser = "LocalAdminUser"
 $VMLocalAdminSecurePassword = ConvertTo-SecureString "J6%W98Y^rZ" -AsPlainText -Force
 $LocationName = "westeurope"
-$ResourceGroupName = "rg-wvd-ont"
+$ResourceGroupName = "rg-wvd-tmp-" + $timeInt
 $ComputerName = "vm" + $timeInt
 $VMName = "vm" + $timeInt
-$VMSize = "Standard_D2s_v3"
+$VMSize = "Standard_DS1_v2"
 
 # Network settings    
 $NetworkResourceGroup = "rg-management-networking-p"
@@ -36,6 +36,9 @@ try {
 catch {
     Write-Warning "Failed to create temorary resource group, $_"   
 }
+
+# Image settings
+$imageName = "Img-Wvd-" + $timeInt
 
 Write-Host ""
 Write-Host "[VM creation phase]"
