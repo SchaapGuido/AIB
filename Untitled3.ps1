@@ -11,8 +11,8 @@ $imageDefName = 'WVD-Images'
 $SrcObjParams = @{
   SourceTypePlatformImage = $true
   Publisher = 'MicrosoftWindowsDesktop'
-  Offer = 'office-365'
-  Sku = '20h1-evd-o365pp'
+  Offer = 'windows-10'
+  Sku = '20h1-evd'
   Version = 'latest'
 }
 $srcPlatform = New-AzImageBuilderSourceObject @SrcObjParams
@@ -31,7 +31,7 @@ $ImgCustomParams = @{
   PowerShellCustomizer = $true
   CustomizerName = 'InstallApp'
   RunElevated = $true
-  ScriptUri = "https://raw.githubusercontent.com/SchaapGuido/AIB/main/Win10ms_O365Ov0_3.ps1"
+  ScriptUri = "https://raw.githubusercontent.com/SchaapGuido/AIB/main/Win10ms_O365v0_3.ps1"
 }
 $Customizer = New-AzImageBuilderCustomizerObject @ImgCustomParams
 
@@ -45,3 +45,10 @@ $ImgTemplateParams = @{
   UserAssignedIdentityId = $identityNameResourceId
 }
 New-AzImageBuilderTemplate @ImgTemplateParams
+
+Get-AzImageBuilderTemplate -ImageTemplateName $imageTemplateName -ResourceGroupName $imageResourceGroup |
+  Select-Object -Property Name, LastRunStatusRunState, LastRunStatusMessage, ProvisioningState, ProvisioningErrorMessage
+
+# Remove-AzImageBuilderTemplate -ImageTemplateName $imageTemplateName -ResourceGroupName $imageResourceGroup
+
+# Start-AzImageBuilderTemplate -ResourceGroupName $imageResourceGroup -Name $imageTemplateName
