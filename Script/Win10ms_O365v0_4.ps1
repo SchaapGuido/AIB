@@ -56,7 +56,13 @@ Write-Host '*** WVD AIB CUSTOMIZER PHASE *** CONFIG *** Install language pack **
 ##Disable Language Pack Cleanup##
 Disable-ScheduledTask -TaskPath "\Microsoft\Windows\AppxDeploymentClient\" -TaskName "Pre-staged app cleanup"
 ##Set Language Pack Content Stores## 
-Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/SchaapGuido/AIB/main/Microsoft-Windows-Client-Language-Pack_x64_nl-nl.cab' -OutFile 'c:\temp\Microsoft-Windows-Client-Language-Pack_x64_nl-nl.cab'
+Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/SchaapGuido/AIB/main/Installers/Microsoft-Windows-Client-Language-Pack_x64_nl-nl.cab' -OutFile 'c:\temp\Microsoft-Windows-Client-Language-Pack_x64_nl-nl.cab'
+Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/SchaapGuido/AIB/main/Installers/languageexperiencepack.nl-nl.neutral.appx' -OutFile 'c:\temp\languageexperiencepack.nl-nl.neutral.appx'
+Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/SchaapGuido/AIB/main/Installers/License.xml' -OutFile 'c:\temp\License.xml'
+Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/SchaapGuido/AIB/main/Installers/Microsoft-Windows-LanguageFeatures-Basic-nl-nl-Package~31bf3856ad364e35~amd64~~.cab' -OutFile 'c:\temp\MMicrosoft-Windows-LanguageFeatures-Basic-nl-nl-Package~31bf3856ad364e35~amd64~~.cab'
+Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/SchaapGuido/AIB/main/Installers/Microsoft-Windows-LanguageFeatures-Handwriting-nl-nl-Package~31bf3856ad364e35~amd64~~.cab' -OutFile 'c:\temp\MMicrosoft-Windows-LanguageFeatures-Handwriting-nl-nl-Package~31bf3856ad364e35~amd64~~.cab'
+Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/SchaapGuido/AIB/main/Installers/Microsoft-Windows-LanguageFeatures-OCR-nl-nl-Package~31bf3856ad364e35~amd64~~.cab' -OutFile 'c:\temp\Microsoft-Windows-LanguageFeatures-OCR-nl-nl-Package~31bf3856ad364e35~amd64~~.cab'
+Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/SchaapGuido/AIB/main/Installers/Microsoft-Windows-LanguageFeatures-TextToSpeech-nl-nl-Package~31bf3856ad364e35~amd64~~.cab' -OutFile 'c:\temp\Microsoft-Windows-LanguageFeatures-TextToSpeech-nl-nl-Package~31bf3856ad364e35~amd64~~.cab'
 Add-WindowsPackage -Online -PackagePath c:\temp\Microsoft-Windows-Client-Language-Pack_x64_nl-nl.cab
 $LanguageList = Get-WinUserLanguageList
 $LanguageList.Add("nl-NL")
@@ -64,8 +70,8 @@ Set-WinUserLanguageList $LanguageList -force
 Add-AppxProvisionedPackage 
 Write-Host '*** WVD AIB CUSTOMIZER PHASE *** CONFIG *** Install language pack ***'
 
-Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/SchaapGuido/AIB/main/setup.exe' -OutFile 'c:\temp\setup.exe'
-Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/SchaapGuido/AIB/main/Config.xml' -OutFile 'c:\temp\Config.xml'
+Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/SchaapGuido/AIB/main/Installers/setup.exe' -OutFile 'c:\temp\setup.exe'
+Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/SchaapGuido/AIB/main/Installers/Config.xml' -OutFile 'c:\temp\Config.xml'
 Start-Sleep -Seconds 10
 Start-Process -Wait -FilePath C:\temp\setup.exe -ArgumentList "/download c:\temp\config.xml"
 Write-Host '*** WVD AIB CUSTOMIZER PHASE *** CONFIG *** Download latest Office 365 ***'
@@ -76,7 +82,7 @@ Start-Sleep -Seconds 30
 Write-Host '*** WVD AIB CUSTOMIZER PHASE *** CONFIG *** Install latest Office 365 *** - Exit Code: ' $LASTEXITCODE
 
 Write-Host '*** WVD AIB CUSTOMIZER PHASE *** INSTALL *** Install KeePass ***' 
-Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/SchaapGuido/AIB/main/KeePass-2.47.msi' -OutFile 'c:\temp\KeePass-2.47.msi'
+Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/SchaapGuido/AIB/main/Installers/KeePass-2.47.msi' -OutFile 'c:\temp\KeePass-2.47.msi'
 Start-Process -Wait -FilePath c:\temp\KeePass-2.47.msi -ArgumentList "/quiet"
 Write-Host '*** WVD AIB CUSTOMIZER PHASE *** INSTALL *** Install KeePass *** - Exit Code: ' $LASTEXITCODE
 
@@ -100,8 +106,15 @@ Invoke-WebRequest -Uri 'http://go.microsoft.com/fwlink/?LinkID=2093437' -OutFile
 Start-Process -Wait -FilePath c:\temp\MicrosoftEdgeEnterpriseX64.msi -ArgumentList "/quiet"
 Write-Host '*** WVD AIB CUSTOMIZER PHASE *** INSTALL *** Install Microsoft Edge Enterprise *** - Exit Code: ' $LASTEXITCODE
 
-Invoke-WebRequest -URI 'https://www.irfanview.info/files/iview457_x64.zip' -OutFile 'c:\temp\iview457_x64.zip'
-Expand-Archive -Path 'c:\temp\iview457_x64.zip' -DestinationPath 'C:\temp\iview457\'  -Force
+Write-Host '*** WVD AIB CUSTOMIZER PHASE *** INSTALL *** Install IrfanView ***' 
+Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/SchaapGuido/AIB/main/Installers/iview457_x64_setup.exe' -OutFile 'c:\temp\iview457_x64_setup.exe'
+Start-Process -Wait -FilePath c:\temp\iview457_x64_setup.exe -ArgumentList "/silent /group=1 /assoc=1 /allusers=1"
+Write-Host '*** WVD AIB CUSTOMIZER PHASE *** INSTALL *** Install IrfanView *** - Exit Code: ' $LASTEXITCODE
+
+Write-Host '*** WVD AIB CUSTOMIZER PHASE *** INSTALL *** Install IrfanView Plugins ***' 
+Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/SchaapGuido/AIB/main/Installers/iview457_plugins_x64_setup.exe' -OutFile 'c:\temp\iview457_plugins_x64_setup.exe'
+Start-Process -Wait -FilePath c:\temp\iview457_plugins_x64_setup.exe -ArgumentList "/silent /allusers=1"
+Write-Host '*** WVD AIB CUSTOMIZER PHASE *** INSTALL *** Install IrfanView Plugins *** - Exit Code: ' $LASTEXITCODE
 
 Write-Host '*** WVD AIB CUSTOMIZER PHASE *** INSTALL *** Install FSLogix ***'
 # Note: Settings for FSLogix can be configured through GPO's)
