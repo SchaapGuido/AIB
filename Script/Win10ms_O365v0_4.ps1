@@ -65,11 +65,11 @@ Write-Host '*** WVD AIB CUSTOMIZER PHASE *** CONFIG *** Install language pack **
 Disable-ScheduledTask -TaskPath "\Microsoft\Windows\AppxDeploymentClient\" -TaskName "Pre-staged app cleanup"
 ##Set Language Pack Content Stores## 
 Start-Sleep -Seconds 10
-Add-WindowsPackage -Online -PackagePath 'c:\temp\Microsoft-Windows-Client-Language-Pack_x64_nl-nl.cab'
-Add-WindowsPackage -Online -PackagePath 'c:\temp\Microsoft-Windows-LanguageFeatures-Basic-nl-nl-Package~31bf3856ad364e35~amd64~~.cab'
-Add-WindowsPackage -Online -PackagePath 'c:\temp\Microsoft-Windows-LanguageFeatures-Handwriting-nl-nl-Package~31bf3856ad364e35~amd64~~.cab'
-Add-WindowsPackage -Online -PackagePath 'c:\temp\Microsoft-Windows-LanguageFeatures-OCR-nl-nl-Package~31bf3856ad364e35~amd64~~.cab'
-Add-WindowsPackage -Online -PackagePath 'c:\temp\Microsoft-Windows-LanguageFeatures-TextToSpeech-nl-nl-Package~31bf3856ad364e35~amd64~~.cab'
+Add-WindowsPackage -Online -PackagePath 'c:\temp\Microsoft-Windows-Client-Language-Pack_x64_nl-nl.cab' | Out-Null
+Add-WindowsPackage -Online -PackagePath 'c:\temp\Microsoft-Windows-LanguageFeatures-Basic-nl-nl-Package~31bf3856ad364e35~amd64~~.cab' | Out-Null
+Add-WindowsPackage -Online -PackagePath 'c:\temp\Microsoft-Windows-LanguageFeatures-Handwriting-nl-nl-Package~31bf3856ad364e35~amd64~~.cab' | Out-Null
+Add-WindowsPackage -Online -PackagePath 'c:\temp\Microsoft-Windows-LanguageFeatures-OCR-nl-nl-Package~31bf3856ad364e35~amd64~~.cab' | Out-Null
+Add-WindowsPackage -Online -PackagePath 'c:\temp\Microsoft-Windows-LanguageFeatures-TextToSpeech-nl-nl-Package~31bf3856ad364e35~amd64~~.cab' | Out-Null
 $LanguageList = Get-WinUserLanguageList
 $LanguageList.Add("nl-NL")
 Set-WinUserLanguageList $LanguageList -force
