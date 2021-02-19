@@ -9,6 +9,12 @@ $identityName = "AzureImageBuilderUserIdentity"
 $myGalleryName = 'AIBImageGallery'
 $imageDefName = 'WVD-Images'
 
+$result = Get-AzImageBuilderTemplate -Resourcegroupname rg-wvd-acc
+if ($result)
+{
+  Get-AzImageBuilderTemplate -Resourcegroupname $imageResourceGroup | Remove-AzImageBuilderTemplate
+}
+
 $userAssignedIdentity = Get-AzUserAssignedIdentity -ResourceGroupName $imageResourceGroup -Name $identityName
 
 $SrcObjParams = @{
@@ -36,14 +42,22 @@ $ImgCustomParams = @{
   RunElevated = $true
   ScriptUri = "https://raw.githubusercontent.com/SchaapGuido/AIB/main/Script/Win10ms_O365v0_4.ps1"
 }
-$Customizer = New-AzImageBuilderCustomizerObject @ImgCustomParams
+$Customizer01 = New-AzImageBuilderCustomizerObject @ImgCustomParams
+
+$ImgCustomParams = @{
+  RestartCustomizer = $true
+  CustomizerName = 'RestartVM'
+  RestartCommand = 'shutdown /f /r /t 0 /c \"packer restart\"'
+  RestartCheckCommand = 'powershell -command "& {Write-Output "restarted."}"'
+}
+$Customizer02 = New-AzImageBuilderCustomizerObject @ImgCustomParams
 
 $ImgTemplateParams = @{
   ImageTemplateName = $imageTemplateName
   ResourceGroupName = $imageResourceGroup
   Source = $srcPlatform
   Distribute = $disSharedImg
-  Customize = $Customizer
+  Customize = $Customizer01,$Customizer02
   Location = $location
   UserAssignedIdentityId = $userAssignedIdentity.Id
 }
@@ -58,6 +72,11 @@ if ($imageBuilderResult.ProvisioningState -eq "Succeeded")
 {
   Write-Output "Creating image started."
   Start-AzImageBuilderTemplate -ResourceGroupName $imageResourceGroup -Name $imageTemplateName
+  do {
+    $imageBuilderResult = Get-AzImageBuilderTemplate -ImageTemplateName $imageTemplateName -ResourceGroupName $imageResourceGroup
+    write-host $(Get-Date),$imageBuilderResult.LastRunStatusRunState
+    start-sleep -seconds 60
+  } until ($imageBuilderResult.LastRunStatusRunState -ne "Running")
   Write-Output "Creating image finished."
 }
 else 
