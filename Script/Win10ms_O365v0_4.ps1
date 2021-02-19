@@ -129,6 +129,11 @@ Start-Process -FilePath C:\temp\fslogix\x64\Release\FSLogixAppsSetup.exe -Argume
 Start-Sleep -Seconds 10
 Write-Host '*** WVD AIB CUSTOMIZER PHASE *** INSTALL *** Install FSLogix *** - Exit Code: ' $LASTEXITCODE
 
+Write-Host '*** WVD AIB CUSTOMIZER PHASE *** INSTALL *** Install Adobe Acrobat Reader ***'
+Invoke-WebRequest -Uri 'https://ardownload2.adobe.com/pub/adobe/reader/win/AcrobatDC/1900820071/AcroRdrDC1900820071_nl_NL.exe' -OutFile 'c:\temp\AcroRdrDC1900820071_nl_NL.exe'
+Start-Process -Wait 'c:\temp\AcroRdrDC1900820071_nl_NL.exe' -ArgumentList "/sAll /rs"
+Write-Host '*** WVD AIB CUSTOMIZER PHASE *** INSTALL *** Install Adobe Acrobat Reader *** - Exit Code: ' $LASTEXITCODE
+
 Write-Host '*** WVD AIB CUSTOMIZER PHASE *** START OS CONFIG *** Update the recommended OS configuration ***'
 Write-Host '*** WVD AIB CUSTOMIZER PHASE *** SET OS REGKEY *** Disable Automatic Updates ***'
 New-ItemProperty -Path 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU' -Name 'NoAutoUpdate' -Value '1' -PropertyType DWORD -Force | Out-Null
@@ -155,6 +160,11 @@ Write-Host '*** WVD AIB CUSTOMIZER PHASE *** SET OS REGKEY *** For feedback hub 
 Write-Host '*** WVD AIB CUSTOMIZER PHASE *** SET OS REGKEY *** Fix Watson crashes ***'
 Remove-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows\Windows Error Reporting' -Name "CorporateWerServer*" | Out-Null
 Write-Host '*** WVD AIB CUSTOMIZER PHASE *** SET OS REGKEY *** Fix Watson crashes *** - Exit Code: ' $LASTEXITCODE
+
+Write-Host '*** WVD AIB CUSTOMIZER PHASE *** SET OS REGKEY *** Set Iswvdenvironment key ***'
+New-Item -Path HKLM:\SOFTWARE\Microsoft -Name Teams -ErrorAction Continue
+New-ItemProperty -Path HKLM:\SOFTWARE\Microsoft\Teams -Name IsWVDEnvironment -PropertyType DWORD -Value '1' -ErrorAction Continue
+Write-Host '*** WVD AIB CUSTOMIZER PHASE *** SET OS REGKEY *** Set Iswvdenvironment key *** - Exit Code: ' $LASTEXITCODE
 
 Write-Host '*** WVD AIB CUSTOMIZER PHASE *** INSTALL *** Install Teams in Machine mode ***'
 Invoke-WebRequest -Uri 'https://teams.microsoft.com/downloads/desktopurl?env=production&plat=windows&arch=x64&managedInstaller=true&download=true' -OutFile 'c:\temp\Teams.msi'
