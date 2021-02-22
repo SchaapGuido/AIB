@@ -1,3 +1,6 @@
+Write-Host '*** WVD AIB CUSTOMIZER PHASE *** Stop the custimization when Error occurs ***'
+$ErroractionPreference='Stop'
+
 Write-Host '*** WVD AIB CUSTOMIZER PHASE *** INSTALL *** Install KeePass ***' 
 Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/SchaapGuido/AIB/main/Installers/KeePass-2.47.msi' -OutFile 'c:\temp\KeePass-2.47.msi'
 Start-Process -Wait -FilePath c:\temp\KeePass-2.47.msi -ArgumentList "/quiet"
