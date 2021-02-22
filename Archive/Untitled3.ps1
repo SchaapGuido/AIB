@@ -96,7 +96,7 @@ $Customizer07 = New-AzImageBuilderCustomizerObject @ImgCustomParams
 # Phase 4: Cleanup
 $ImgCustomParams = @{
   PowerShellCustomizer = $true
-  CustomizerName = 'InstallOthers'
+  CustomizerName = 'Cleanup'
   RunElevated = $true
   ScriptUri = "https://raw.githubusercontent.com/SchaapGuido/AIB/main/Script/Cleanup.ps1"
 }
