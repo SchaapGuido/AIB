@@ -1,3 +1,5 @@
+# Install Office and Teams
+
 Write-Host '*** WVD AIB CUSTOMIZER PHASE *** CONFIG *** Download latest Office 365 ***'
 Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/SchaapGuido/AIB/main/Installers/setup.exe' -OutFile 'c:\temp\setup.exe'
 Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/SchaapGuido/AIB/main/Installers/Config.xml' -OutFile 'c:\temp\Config.xml'
