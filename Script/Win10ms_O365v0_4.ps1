@@ -62,7 +62,7 @@ Write-Host '*** WVD AIB CUSTOMIZER PHASE *** CONFIG *** Download language pack f
 
 Write-Host '*** WVD AIB CUSTOMIZER PHASE *** CONFIG *** Install language pack ***'
 ##Disable Language Pack Cleanup##
-Disable-ScheduledTask -TaskPath "\Microsoft\Windows\AppxDeploymentClient\" -TaskName "Pre-staged app cleanup"
+Disable-ScheduledTask -TaskPath "\Microsoft\Windows\AppxDeploymentClient\" -TaskName "Pre-staged app cleanup" | Out-Null
 ##Set Language Pack Content Stores## 
 Start-Sleep -Seconds 10
 Add-WindowsPackage -Online -PackagePath 'c:\temp\Microsoft-Windows-Client-Language-Pack_x64_nl-nl.cab' | Out-Null
@@ -75,11 +75,12 @@ $LanguageList.Add("nl-NL")
 Set-WinUserLanguageList $LanguageList -force
 Write-Host '*** WVD AIB CUSTOMIZER PHASE *** CONFIG *** Install language pack *** - Exit Code: ' $LASTEXITCODE
 
+Write-Host '*** WVD AIB CUSTOMIZER PHASE *** CONFIG *** Download latest Office 365 ***'
 Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/SchaapGuido/AIB/main/Installers/setup.exe' -OutFile 'c:\temp\setup.exe'
 Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/SchaapGuido/AIB/main/Installers/Config.xml' -OutFile 'c:\temp\Config.xml'
 Start-Sleep -Seconds 10
 Start-Process -Wait -FilePath C:\temp\setup.exe -ArgumentList "/download c:\temp\config.xml"
-Write-Host '*** WVD AIB CUSTOMIZER PHASE *** CONFIG *** Download latest Office 365 ***'
+Write-Host '*** WVD AIB CUSTOMIZER PHASE *** CONFIG *** Download latest Office 365 *** - Exit Code: ' $LASTEXITCODE
 
 Write-Host '*** WVD AIB CUSTOMIZER PHASE *** CONFIG *** Install latest Office 365 ***'
 Start-Process -Wait -FilePath C:\temp\setup.exe -ArgumentList "/configure c:\temp\config.xml"
@@ -180,4 +181,16 @@ Get-ChildItem -Path 'C:\temp' -Recurse | Remove-Item -Recurse -Force | Out-Null
 Remove-Item -Path 'C:\temp' -Force | Out-Null
 Write-Host '*** WVD AIB CUSTOMIZER PHASE *** CONFIG *** Deleting temp folder. *** - Exit Code: ' $LASTEXITCODE
 
+Start-Sleep -Seconds 60
+
 Write-Host '*** WVD AIB CUSTOMIZER PHASE ********************* END *************************'   
+
+<#
+{
+"type": "powershell",
+"inline": [
+"New-Item -Path HKLM:\Software\Microsoft\DesiredStateConfiguration",
+"New-ItemProperty -Path HKLM:\Software\Microsoft\DesiredStateConfiguration -Name 'AgentId' -PropertyType STRING -Force"
+]
+},
+#>
