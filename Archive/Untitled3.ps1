@@ -59,7 +59,6 @@ $ImgCustomParams = @{
 }
 $Customizer03 = New-AzImageBuilderCustomizerObject @ImgCustomParams
 
-<#
 # Phase 2: installing Office and Teams
 $ImgCustomParams = @{
   PowerShellCustomizer = $true
@@ -77,30 +76,12 @@ $ImgCustomParams = @{
 }
 $Customizer05 = New-AzImageBuilderCustomizerObject @ImgCustomParams
 
-# Phase 2: installing Office and Teams
-$ImgCustomParams = @{
-  PowerShellCustomizer = $true
-  CustomizerName = 'InstallApp'
-  RunElevated = $true
-  ScriptUri = "https://raw.githubusercontent.com/SchaapGuido/AIB/main/Script/InstallOffice.ps1"
-}
-$Customizer06 = New-AzImageBuilderCustomizerObject @ImgCustomParams
-
-$ImgCustomParams = @{
-  RestartCustomizer = $true
-  CustomizerName = 'RestartVM'
-  RestartCommand = 'shutdown /f /r /t 0 /c "Packer Restart"'
-  RestartCheckCommand = 'powershell -command "& {Write-Output "restarted."}"'
-}
-$Customizer07 = New-AzImageBuilderCustomizerObject @ImgCustomParams
-#>
-
 $ImgTemplateParams = @{
   ImageTemplateName = $imageTemplateName
   ResourceGroupName = $imageResourceGroup
   Source = $srcPlatform
   Distribute = $disSharedImg
-  Customize = $Customizer01,$Customizer02,$Customizer03
+  Customize = $Customizer01,$Customizer02,$Customizer03,$Customizer04,$Customizer05
   Location = $location
   UserAssignedIdentityId = $userAssignedIdentity.Id
   VMProfileVmSize = 'Standard_D2s_v3'
@@ -114,14 +95,14 @@ $imageBuilderResult |
 
 if ($imageBuilderResult.ProvisioningState -eq "Succeeded")
 {
-  Write-Output "Creating image started."
+  Write-Output "Creating image started on $($imageBuilderResult.LastRunStatusStartTime)"
   Start-AzImageBuilderTemplate -ResourceGroupName $imageResourceGroup -Name $imageTemplateName -AsJob
   do {
     start-sleep -seconds 60
     $imageBuilderResult = Get-AzImageBuilderTemplate -ImageTemplateName $imageTemplateName -ResourceGroupName $imageResourceGroup
     write-host $(Get-Date),$imageBuilderResult.LastRunStatusRunState
   } until ($imageBuilderResult.LastRunStatusRunState -ne "Running")
-  Write-Output "Creating image finished."
+  Write-Output "Creating image finished on $($imageBuilderResult.LastRunStatusEndTime)"
 }
 else 
 {
