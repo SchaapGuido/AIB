@@ -95,12 +95,12 @@ $imageBuilderResult |
 
 if ($imageBuilderResult.ProvisioningState -eq "Succeeded")
 {
-  Write-Output "Creating image started on $($imageBuilderResult.LastRunStatusStartTime)"
+  Write-Output "Creating image started"
   Start-AzImageBuilderTemplate -ResourceGroupName $imageResourceGroup -Name $imageTemplateName -AsJob
   do {
     start-sleep -seconds 60
     $imageBuilderResult = Get-AzImageBuilderTemplate -ImageTemplateName $imageTemplateName -ResourceGroupName $imageResourceGroup
-    write-host $(Get-Date),$imageBuilderResult.LastRunStatusRunState
+    write-host $(Get-Date),$imageBuilderResult.LastRunStatusRunState,$imageBuilderResult.LastRunStatusRunSubState
   } until ($imageBuilderResult.LastRunStatusRunState -ne "Running")
   Write-Output "Creating image finished on $($imageBuilderResult.LastRunStatusEndTime)"
 }
@@ -110,5 +110,5 @@ else
   Write-Warning $imageBuilderResult.ProvisioningErrorMessage
 }
 
-Stop-AzImageBuilderTemplate -ResourceGroupName $imageResourceGroup -Name $imageTemplateName -NoWait
+Stop-AzImageBuilderTemplate -ResourceGroupName $imageResourceGroup -Name $imageTemplateName
 Remove-AzImageBuilderTemplate -ImageTemplateName $imageTemplateName -ResourceGroupName $imageResourceGroup
