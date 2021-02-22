@@ -1,3 +1,4 @@
+
 Write-Host '*** WVD AIB CUSTOMIZER PHASE *** CONFIG *** Download latest Office 365 ***'
 Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/SchaapGuido/AIB/main/Installers/setup.exe' -OutFile 'c:\temp\setup.exe'
 Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/SchaapGuido/AIB/main/Installers/Config.xml' -OutFile 'c:\temp\Config.xml'
@@ -10,11 +11,6 @@ Write-Host '*** WVD AIB CUSTOMIZER PHASE *** CONFIG *** Download latest Office 3
 Write-Host '*** WVD AIB CUSTOMIZER PHASE *** CONFIG *** Install latest Office 365 ***'
 Start-Process -Wait -FilePath C:\temp\setup.exe -ArgumentList "/configure c:\temp\config.xml"
 Write-Host '*** WVD AIB CUSTOMIZER PHASE *** CONFIG *** Install latest Office 365 *** - Exit Code: ' $LASTEXITCODE
-
-Write-Host '*** WVD AIB CUSTOMIZER PHASE *** SET OS REGKEY *** Set Iswvdenvironment key ***'
-New-Item -Path HKLM:\SOFTWARE\Microsoft -Name Teams -ErrorAction Continue
-New-ItemProperty -Path HKLM:\SOFTWARE\Microsoft\Teams -Name IsWVDEnvironment -PropertyType DWORD -Value '1' -ErrorAction Continue
-Write-Host '*** WVD AIB CUSTOMIZER PHASE *** SET OS REGKEY *** Set Iswvdenvironment key *** - Exit Code: ' $LASTEXITCODE
 
 Write-Host '*** WVD AIB CUSTOMIZER PHASE *** INSTALL *** Install Teams in Machine mode ***'
 Invoke-WebRequest -Uri 'https://teams.microsoft.com/downloads/desktopurl?env=production&plat=windows&arch=x64&managedInstaller=true&download=true' -OutFile 'c:\temp\Teams.msi'
