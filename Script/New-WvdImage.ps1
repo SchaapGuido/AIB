@@ -79,6 +79,7 @@ $ImgCustomParams = @{
 }
 $Customizer06 = New-AzImageBuilderCustomizerObject @ImgCustomParams
 
+<#
 $ImgCustomParams = @{
   RestartCustomizer = $true
   CustomizerName = 'RestartVM'
@@ -86,6 +87,7 @@ $ImgCustomParams = @{
   RestartCheckCommand = 'powershell -command "& {Write-Output "restarted after software installed."}"'
 }
 $Customizer07 = New-AzImageBuilderCustomizerObject @ImgCustomParams
+#>
 
 # Phase 4: Cleanup
 $ImgCustomParams = @{
@@ -102,7 +104,7 @@ $ImgTemplateParams = @{
   ResourceGroupName = $imageResourceGroup
   Source = $srcPlatform
   Distribute = $disSharedImg
-  Customize = $Customizer01,$Customizer02,$Customizer03,$Customizer04,$Customizer06,$Customizer07,$Customizer08
+  Customize = $Customizer01,$Customizer02,$Customizer03,$Customizer04,$Customizer06,$Customizer08
   Location = $location
   UserAssignedIdentityId = $userAssignedIdentity.Id
   VMProfileVmSize = 'Standard_D2s_v3'

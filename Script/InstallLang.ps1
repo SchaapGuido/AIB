@@ -27,3 +27,5 @@ $LanguageList = Get-WinUserLanguageList
 $LanguageList.Add("nl-NL")
 Set-WinUserLanguageList $LanguageList -force
 Write-Host '*** WVD AIB CUSTOMIZER PHASE *** CONFIG *** Install language pack *** - Exit Code: ' $LASTEXITCODE
+
+Start-Sleep -Seconds 60
