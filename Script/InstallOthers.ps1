@@ -41,5 +41,6 @@ Write-Host '*** WVD AIB CUSTOMIZER PHASE *** INSTALL *** Install FSLogix ***'
 Invoke-WebRequest -Uri 'https://aka.ms/fslogix_download' -OutFile 'c:\temp\fslogix.zip'
 Expand-Archive -Path 'C:\temp\fslogix.zip' -DestinationPath 'C:\temp\fslogix\'  -Force
 Start-Process -FilePath C:\temp\fslogix\x64\Release\FSLogixAppsSetup.exe -ArgumentList "/install /quiet /norestart"
-Start-Sleep -Seconds 10
 Write-Host '*** WVD AIB CUSTOMIZER PHASE *** INSTALL *** Install FSLogix *** - Exit Code: ' $LASTEXITCODE
+
+Start-Sleep -Seconds 60
