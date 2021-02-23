@@ -55,7 +55,7 @@ $ImgCustomParams = @{
   RestartCustomizer = $true
   CustomizerName = 'RestartVM'
   RestartCommand = 'shutdown /f /r /t 60 /c "Packer Restart"'
-  RestartCheckCommand = 'powershell -command "& {Write-Output "restarted."}"'
+  RestartCheckCommand = 'powershell -command "& {Write-Output "restarted after Windows update."}"'
 }
 $Customizer03 = New-AzImageBuilderCustomizerObject @ImgCustomParams
 
@@ -67,14 +67,6 @@ $ImgCustomParams = @{
   ScriptUri = "https://raw.githubusercontent.com/SchaapGuido/AIB/main/Script/InstallOffice.ps1"
 }
 $Customizer04 = New-AzImageBuilderCustomizerObject @ImgCustomParams
-
-$ImgCustomParams = @{
-  RestartCustomizer = $true
-  CustomizerName = 'RestartVM'
-  RestartCommand = 'shutdown /f /r /t 60 /c "Packer Restart"'
-  RestartCheckCommand = 'powershell -command "& {Write-Output "restarted."}"'
-}
-$Customizer05 = New-AzImageBuilderCustomizerObject @ImgCustomParams
 
 # Phase 3: installing other packages
 $ImgCustomParams = @{
@@ -89,7 +81,7 @@ $ImgCustomParams = @{
   RestartCustomizer = $true
   CustomizerName = 'RestartVM'
   RestartCommand = 'shutdown /f /r /t 60 /c "Packer Restart"'
-  RestartCheckCommand = 'powershell -command "& {Write-Output "restarted."}"'
+  RestartCheckCommand = 'powershell -command "& {Write-Output "restarted after software installed."}"'
 }
 $Customizer07 = New-AzImageBuilderCustomizerObject @ImgCustomParams
 
@@ -108,7 +100,7 @@ $ImgTemplateParams = @{
   ResourceGroupName = $imageResourceGroup
   Source = $srcPlatform
   Distribute = $disSharedImg
-  Customize = $Customizer01,$Customizer02,$Customizer03,$Customizer04,$Customizer05,$Customizer06,$Customizer07.$Customizer08
+  Customize = $Customizer01,$Customizer02,$Customizer03,$Customizer04,$Customizer06,$Customizer07,$Customizer08
   Location = $location
   UserAssignedIdentityId = $userAssignedIdentity.Id
   VMProfileVmSize = 'Standard_D2s_v3'
@@ -127,7 +119,7 @@ if ($imageBuilderResult.ProvisioningState -eq "Succeeded")
   do {
     start-sleep -seconds 60
     $imageBuilderResult = Get-AzImageBuilderTemplate -ImageTemplateName $imageTemplateName -ResourceGroupName $imageResourceGroup
-    $(Get-Date),$imageBuilderResult.LastRunStatusRunState,$imageBuilderResult.LastRunStatusRunSubState
+    Write-Host $(Get-Date),$imageBuilderResult.LastRunStatusRunState,$imageBuilderResult.LastRunStatusRunSubState
   } until ($imageBuilderResult.LastRunStatusRunState -ne "Running")
   Write-Output "Creating image finished on $($imageBuilderResult.LastRunStatusEndTime)"
 }
