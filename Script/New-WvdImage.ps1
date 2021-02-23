@@ -1,4 +1,6 @@
-﻿Select-AzSubscription -Subscription '92d0bf2b-bd52-4b00-b9b7-5969d1949ba0'
+﻿# Connect-AzAccount
+
+Select-AzSubscription -Subscription '92d0bf2b-bd52-4b00-b9b7-5969d1949ba0'
 
 $imageResourceGroup = 'rg-wvd-ont'
 $location = 'Westeurope'
