@@ -1,6 +1,11 @@
 Write-Host '*** WVD AIB CUSTOMIZER PHASE *** Stop the custimization when Error occurs ***'
 $ErroractionPreference='Stop'
 
+Write-Host '*** WVD AIB CUSTOMIZER PHASE *** INSTALL *** Install Adobe Acrobat Reader ***'
+Invoke-WebRequest -Uri 'https://ardownload2.adobe.com/pub/adobe/reader/win/AcrobatDC/1900820071/AcroRdrDC1900820071_nl_NL.exe' -OutFile 'c:\temp\AcroRdrDC1900820071_nl_NL.exe'
+Start-Process -Wait 'c:\temp\AcroRdrDC1900820071_nl_NL.exe' -ArgumentList "/sAll /rs"
+Write-Host '*** WVD AIB CUSTOMIZER PHASE *** INSTALL *** Install Adobe Acrobat Reader *** - Exit Code: ' $LASTEXITCODE
+
 Write-Host '*** WVD AIB CUSTOMIZER PHASE *** INSTALL *** Install KeePass ***' 
 Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/SchaapGuido/AIB/main/Installers/KeePass-2.47.msi' -OutFile 'c:\temp\KeePass-2.47.msi'
 Start-Process -Wait -FilePath c:\temp\KeePass-2.47.msi -ArgumentList "/quiet"
