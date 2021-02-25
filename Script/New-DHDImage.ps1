@@ -1,23 +1,25 @@
 ﻿# VM settings
-[int]$timeInt = $(Get-Date -UFormat '%m%d%H%M%S')
 $VMLocalAdminUser = "LocalAdminUser"
 $VMLocalAdminSecurePassword = ConvertTo-SecureString "J6%W98Y^rZ" -AsPlainText -Force
 $LocationName = "westeurope"
-$ResourceGroupName = "rg-wvd-ont"
-$ComputerName = "vm" + $timeInt
-$VMName = "vm" + $timeInt
-$VMSize = "Standard_D2s_v3"
+$ResourceGroupName = "rgwvdacc"
+$ComputerName = "vmwvdacc"
+$VMName = $ComputerName
+$VMSize = "Standard_D8s_v3"
 
 # Network settings    
 $NetworkResourceGroup = "rg-management-networking-p"
 $NetworkName = "vnet-shared-p"
-$NICName = "vm" + $timeInt + "NIC"
+$NICName = $ComputerName + "NIC"
 $SubnetName = "sn-wvd-p"
-    
-# Marketplace image settings
-$ImagePublisher = "MicrosoftWindowsDesktop"
-$ImageOffer = "office-365"
-$ImageSKU = "20h1-evd-o365pp"
+
+$myGalleryName = 'AIBImageGallery'
+$imageDefName = 'WVD-Images'
+
+$imageDefinition = Get-AzGalleryImageDefinition `
+   -GalleryName $myGalleryName `
+   -ResourceGroupName 'rg-wvd-ont' `
+   -Name $imageDefName
 
 # Tags settings
 $CreatedOnDate = Get-Date -Format g
@@ -71,17 +73,19 @@ try {
     Write-Host "Set VM NIC properties."
     $VirtualMachine = Add-AzVMNetworkInterface -VM $VirtualMachine `
         -Id $NIC.Id `
-
+<#
     Write-Host "Set VM source image properties."
     $VirtualMachine = Set-AzVMSourceImage -VM $VirtualMachine `
         -PublisherName $ImagePublisher `
         -Offer $ImageOffer `
         -Skus $ImageSKU `
         -Version latest `
+#>
         
     Write-Host "Create VM."
     New-AzVM -ResourceGroupName $ResourceGroupName `
         -Location $LocationName `
+        -Image $imageDefinition.Id
         -VM $VirtualMachine `
         -Tag $tags `
 }
