@@ -8,6 +8,10 @@
       <ExcludeApp ID="OneDrive" />
       <ExcludeApp ID="Teams" />
     </Product>
+    <Product ID="VisioProRetail" > 
+      <Language ID="en-us" />  
+      <Language ID="nl-NL" />
+   </Product> 
   </Add>
   <RemoveMSI/>
   <Updates Enabled="FALSE"/>
