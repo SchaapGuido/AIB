@@ -1,14 +1,15 @@
-﻿# Connect-AzAccount
+﻿Connect-AzAccount
 
 Select-AzSubscription -Subscription '92d0bf2b-bd52-4b00-b9b7-5969d1949ba0'
 
-$imageResourceGroup = 'rg-wvd-ont'
+$imageResourceGroup = 'rg-management-p'
+$systemResourceGroup = 'rgwvdsys'
 $location = 'Westeurope'
-$imageTemplateName = 'WVD-Images'
+$imageTemplateName = 'Template-WVD-Images'
 $runOutputName = 'myDistResults'
 $subscriptionID = (Get-AzContext).Subscription.Id
 $identityName = "AzureImageBuilderUserIdentity"
-$myGalleryName = 'AIBImageGallery'
+$myGalleryName = 'DHDImageGallery'
 $imageDefName = 'WVD-Images'
 
 $result = Get-AzImageBuilderTemplate -Resourcegroupname $imageResourceGroup
@@ -17,7 +18,7 @@ if ($result)
   Get-AzImageBuilderTemplate -Resourcegroupname $imageResourceGroup | Remove-AzImageBuilderTemplate
 }
 
-$userAssignedIdentity = Get-AzUserAssignedIdentity -ResourceGroupName $imageResourceGroup -Name $identityName
+$userAssignedIdentity = Get-AzUserAssignedIdentity -ResourceGroupName $systemResourceGroup -Name $identityName
 
 $SrcObjParams = @{
   SourceTypePlatformImage = $true
