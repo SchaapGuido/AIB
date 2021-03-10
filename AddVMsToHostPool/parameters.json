@@ -1,0 +1,170 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "nestedTemplatesLocation": {
+            "value": "https://catalogartifact.azureedge.net/publicartifacts/Microsoft.Hostpool-ARM-1.0.22-preview/"
+        },
+        "artifactsLocation": {
+            "value": "https://wvdportalstorageblob.blob.core.windows.net/galleryartifacts/Configuration_1-25-2021.zip"
+        },
+        "hostpoolName": {
+            "value": "hpwvdacc"
+        },
+        "hostpoolToken": {
+            "value": null
+        },
+        "hostpoolResourceGroup": {
+            "value": "rgwvdacc"
+        },
+        "hostpoolLocation": {
+            "value": "westeurope"
+        },
+        "hostpoolProperties": {
+            "value": {
+                "friendlyName": null,
+                "description": "Created through the WVD extension",
+                "hostPoolType": "Pooled",
+                "personalDesktopAssignmentType": null,
+                "applicationGroupReferences": [
+                    "/subscriptions/92d0bf2b-bd52-4b00-b9b7-5969d1949ba0/resourcegroups/rgwvdacc/providers/Microsoft.DesktopVirtualization/applicationgroups/hpwvdacc-DAG"
+                ],
+                "customRdpProperty": "audiocapturemode:i:1;redirected video capture encoding quality:i:1;camerastoredirect:s:*;devicestoredirect:s:*;usbdevicestoredirect:s:*;",
+                "maxSessionLimit": 4,
+                "loadBalancerType": "DepthFirst",
+                "validationEnvironment": false,
+                "ring": null,
+                "registrationInfo": {
+                    "expirationTime": "2021-02-26T11:02:31.087Z",
+                    "token": "eyJhbGciOiJSUzI1NiIsImtpZCI6IkU3MDE1QTU5NzU5N0Y3RDg1MjMyRTRBOTA3QTU0OTYyNzNBNEIxMjAiLCJ0eXAiOiJKV1QifQ.eyJSZWdpc3RyYXRpb25JZCI6IjA3NTE0ZGZhLTQ3ZWMtNDdkOC1hOTE4LWE2ZGE0MzNmODlhMCIsIkJyb2tlclVyaSI6Imh0dHBzOi8vcmRicm9rZXItZy1ldS1yMC53dmQubWljcm9zb2Z0LmNvbS8iLCJEaWFnbm9zdGljc1VyaSI6Imh0dHBzOi8vcmRkaWFnbm9zdGljcy1nLWV1LXIwLnd2ZC5taWNyb3NvZnQuY29tLyIsIkVuZHBvaW50UG9vbElkIjoiNDcwNjQzMWItYzlhMC00YjY1LThmMGQtZmMyOGY0MjU1Y2JmIiwiR2xvYmFsQnJva2VyVXJpIjoiaHR0cHM6Ly9yZGJyb2tlci53dmQubWljcm9zb2Z0LmNvbS8iLCJHZW9ncmFwaHkiOiJFVSIsIm5iZiI6MTYxNDI1MDk2MCwiZXhwIjoxNjE0MzM3MzUxLCJpc3MiOiJSREluZnJhVG9rZW5NYW5hZ2VyIiwiYXVkIjoiUkRtaSJ9.fx_pbAI1CRfkWVgmB4oaYrDX9PfpStI9auoa7h9bwCq7xEB78paTRI7ikyRVbIzUbKkhxVD13KO5_uhycFRzVWqbYHFBNRN09Z1JIeRKfYNor5WCTICR1MBWTgVhH2k6vZbxgQWTNd28HMF-E5ksTtIGu7d_8R0q5PPhB6Kj0KzwtiMvVFgKlo6IKsZ26JEBGvDPuUCU42g6aHWLvhUgjWtEDPsxVGIX3fwlh4ppg-DG1q9haAnbapdEkQvE9VK-JA9T3xH6iX5K1rr7Cl31VQulXU-OuXKYN_Y5xCfoiJfr2GigjR7OVp-gm94Pa5p_IZYIxFBA9K7dpbG2igwbuw",
+                    "resetToken": false,
+                    "registrationTokenOperation": "None"
+                },
+                "vmTemplate": "{\"domain\":\"dhd.nl\",\"galleryImageOffer\":null,\"galleryImagePublisher\":null,\"galleryImageSKU\":null,\"imageType\":\"CustomImage\",\"imageUri\":null,\"customImageId\":\"/subscriptions/92d0bf2b-bd52-4b00-b9b7-5969d1949ba0/resourceGroups/rg-wvd-ont/providers/Microsoft.Compute/galleries/AIBImageGallery/images/WVD-Images\",\"namePrefix\":\"vmwvdacc\",\"osDiskType\":\"Premium_LRS\",\"useManagedDisks\":true,\"vmSize\":{\"id\":\"Standard_D8s_v3\",\"cores\":8,\"ram\":32},\"galleryItemId\":null}",
+                "preferredAppGroupType": "Desktop",
+                "migrationRequest": null,
+                "cloudPcResource": false,
+                "startVMOnConnect": false,
+                "ssoadfsAuthority": null,
+                "ssoClientId": null,
+                "ssoClientSecretKeyVaultPath": null,
+                "ssoSecretType": null,
+                "objectId": "4706431b-c9a0-4b65-8f0d-fc28f4255cbf"
+            }
+        },
+        "vmTemplate": {
+            "value": ""
+        },
+        "administratorAccountUsername": {
+            "value": "azr_gschaap@dhd.nl"
+        },
+        "administratorAccountPassword": {
+            "value": null
+        },
+        "vmAdministratorAccountUsername": {
+            "value": "Beheerder"
+        },
+        "vmAdministratorAccountPassword": {
+            "value": null
+        },
+        "createAvailabilitySet": {
+            "value": true
+        },
+        "vmResourceGroup": {
+            "value": "rgwvdacc"
+        },
+        "vmLocation": {
+            "value": "westeurope"
+        },
+        "vmSize": {
+            "value": "Standard_D8s_v3"
+        },
+        "vmInitialNumber": {
+            "value": 0
+        },
+        "vmNumberOfInstances": {
+            "value": 2
+        },
+        "vmNamePrefix": {
+            "value": "vmwvdacc"
+        },
+        "vmImageType": {
+            "value": "CustomImage"
+        },
+        "vmGalleryImageOffer": {
+            "value": ""
+        },
+        "vmGalleryImagePublisher": {
+            "value": ""
+        },
+        "vmGalleryImageSKU": {
+            "value": ""
+        },
+        "vmImageVhdUri": {
+            "value": ""
+        },
+        "vmCustomImageSourceId": {
+            "value": "/subscriptions/92d0bf2b-bd52-4b00-b9b7-5969d1949ba0/resourceGroups/rg-wvd-ont/providers/Microsoft.Compute/galleries/AIBImageGallery/images/WVD-Images"
+        },
+        "vmDiskType": {
+            "value": "Premium_LRS"
+        },
+        "vmUseManagedDisks": {
+            "value": true
+        },
+        "storageAccountResourceGroupName": {
+            "value": ""
+        },
+        "existingVnetName": {
+            "value": "vnet-shared-p"
+        },
+        "existingSubnetName": {
+            "value": "sn-wvd-p"
+        },
+        "virtualNetworkResourceGroupName": {
+            "value": "rg-management-networking-p"
+        },
+        "createNetworkSecurityGroup": {
+            "value": false
+        },
+        "networkSecurityGroupId": {
+            "value": ""
+        },
+        "networkSecurityGroupRules": {
+            "value": []
+        },
+        "availabilitySetTags": {
+            "value": {}
+        },
+        "networkInterfaceTags": {
+            "value": {}
+        },
+        "networkSecurityGroupTags": {
+            "value": {}
+        },
+        "virtualMachineTags": {
+            "value": {}
+        },
+        "imageTags": {
+            "value": {}
+        },
+        "deploymentId": {
+            "value": "13250723-1574-40d2-b460-e10fc90620d0"
+        },
+        "apiVersion": {
+            "value": "2019-12-10-preview"
+        },
+        "ouPath": {
+            "value": "OU=WvdPrd,OU=Servers,DC=private,DC=dhd,DC=nl"
+        },
+        "domain": {
+            "value": "private.dhd.nl"
+        },
+        "aadJoin": {
+            "value": false
+        },
+        "intune": {
+            "value": false
+        }
+    }
+}

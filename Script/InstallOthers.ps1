@@ -41,6 +41,20 @@ Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/SchaapGuido/AIB/main/I
 Start-Process -Wait -FilePath c:\temp\iview457_plugins_x64_setup.exe -ArgumentList "/silent /allusers=1"
 Write-Host '*** WVD AIB CUSTOMIZER PHASE *** INSTALL *** Install IrfanView Plugins *** - Exit Code: ' $LASTEXITCODE
 
+Write-Host '*** WVD AIB CUSTOMIZER PHASE *** INSTALL *** Install Microsoft To Do Provisioning App ***'
+Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/SchaapGuido/AIB/main/Installers/Microsoft.VCLibs.140.00_14.0.29231.0_x64__8wekyb3d8bbwe.Appx' -OutFile 'c:\temp\Microsoft.VCLibs.140.00_14.0.29231.0_x64__8wekyb3d8bbwe.Appx'
+Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/SchaapGuido/AIB/main/Installers/Microsoft.UI.Xaml.2.4_2.42007.9001.0_x64__8wekyb3d8bbwe.Appx' -OutFile 'c:\temp\Microsoft.UI.Xaml.2.4_2.42007.9001.0_x64__8wekyb3d8bbwe.Appx'
+Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/SchaapGuido/AIB/main/Installers/Microsoft.NET.Native.Framework.2.2_2.2.29512.0_x64__8wekyb3d8bbwe.Appx' -OutFile 'c:\temp\Microsoft.NET.Native.Framework.2.2_2.2.29512.0_x64__8wekyb3d8bbwe.Appx'
+Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/SchaapGuido/AIB/main/Installers/Microsoft.NET.Native.Runtime.2.2_2.2.28604.0_x64__8wekyb3d8bbwe.Appx' -OutFile 'c:\temp\Microsoft.NET.Native.Runtime.2.2_2.2.28604.0_x64__8wekyb3d8bbwe.Appx'
+Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/SchaapGuido/AIB/main/Installers/Microsoft.Todos_2.39.4622.0_neutral___8wekyb3d8bbwe.AppxBundle' -OutFile 'c:\temp\Microsoft.Todos_2.39.4622.0_neutral___8wekyb3d8bbwe.AppxBundle'
+$depPackages = ('C:\Temp\Microsoft.VCLibs.140.00_14.0.29231.0_x64__8wekyb3d8bbwe.Appx',
+    'C:\Temp\Microsoft.UI.Xaml.2.4_2.42007.9001.0_x64__8wekyb3d8bbwe.Appx',
+    'C:\Temp\Microsoft.NET.Native.Framework.2.2_2.2.29512.0_x64__8wekyb3d8bbwe.Appx',
+    'C:\Temp\Microsoft.NET.Native.Runtime.2.2_2.2.28604.0_x64__8wekyb3d8bbwe.Appx')
+$packagePath = 'C:\Temp\Microsoft.Todos_2.39.4622.0_neutral___8wekyb3d8bbwe.AppxBundle'
+Add-AppxProvisionedPackage -Online -PackagePath $packagePath -DependencyPackagePath $depPackages -SkipLicense
+Write-Host '*** WVD AIB CUSTOMIZER PHASE *** INSTALL *** Install Microsoft To Do Provisioning App *** - Exit Code: ' $LASTEXITCODE
+
 Write-Host '*** WVD AIB CUSTOMIZER PHASE *** INSTALL *** Install FSLogix ***'
 # Note: Settings for FSLogix can be configured through GPO's)
 Invoke-WebRequest -Uri 'https://aka.ms/fslogix_download' -OutFile 'c:\temp\fslogix.zip'
