@@ -2,15 +2,15 @@
 
 Select-AzSubscription -Subscription '92d0bf2b-bd52-4b00-b9b7-5969d1949ba0'
 
-$imageResourceGroup = 'rg-management-p'
-$systemResourceGroup = 'rgwvdsys'
+#$imageResourceGroup = 'rg-management-p'
+$imageResourceGroup = 'rgwvdsys'
 $location = 'Westeurope'
 $imageTemplateName = 'Template-WVD-Images'
 $runOutputName = 'myDistResults'
 $subscriptionID = (Get-AzContext).Subscription.Id
 $identityName = "AzureImageBuilderUserIdentity"
-$myGalleryName = 'DHDImageGallery'
-$imageDefName = 'WVD-Images'
+$myGalleryName = 'WvdImageGallery'
+$imageDefName = 'WvdAccImages'
 
 $result = Get-AzImageBuilderTemplate -Resourcegroupname $imageResourceGroup
 if ($result)

@@ -32,4 +32,4 @@ $RoleAssignParams = @{
     RoleDefinitionName = $imageRoleDefName
     Scope = "/subscriptions/$subscriptionID/resourceGroups/$systemResourceGroup"
   }
-  New-AzRoleAssignment @RoleAssignParams
+New-AzRoleAssignment @RoleAssignParams
