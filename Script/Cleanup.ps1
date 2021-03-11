@@ -7,4 +7,8 @@ Get-ChildItem -Path 'C:\temp' -Recurse | Remove-Item -Recurse -Force | Out-Null
 Remove-Item -Path 'C:\temp' -Force | Out-Null
 Write-Host '*** WVD AIB CUSTOMIZER PHASE *** CONFIG *** Deleting temp folder. *** - Exit Code: ' $LASTEXITCODE
 
+Write-Host '*** WVD AIB CUSTOMIZER PHASE *** CONFIG *** Deleting default desktop icons ***'
+Get-ChildItem -Path 'C:\Users\Public\Desktop' -Recurse | Remove-Item -Recurse -Force | Out-Null
+Write-Host '*** WVD AIB CUSTOMIZER PHASE *** CONFIG *** Deleting default desktop icons *** - Exit Code: ' $LASTEXITCODE
+
 Start-Sleep -Seconds 60
