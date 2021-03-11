@@ -61,7 +61,7 @@ $ImgCustomParams = @{
 }
 $Customizer03 = New-AzImageBuilderCustomizerObject @ImgCustomParams
 
-# Phase 2: installing Office and Teams
+# Phase 2: installing Office, Teams and Wvd Optimization Tool
 $ImgCustomParams = @{
   PowerShellCustomizer = $true
   CustomizerName = 'InstallOfficeTeams'
@@ -69,6 +69,14 @@ $ImgCustomParams = @{
   ScriptUri = "https://raw.githubusercontent.com/SchaapGuido/AIB/main/Script/InstallOffice.ps1"
 }
 $Customizer04 = New-AzImageBuilderCustomizerObject @ImgCustomParams
+
+$ImgCustomParams = @{
+  RestartCustomizer = $true
+  CustomizerName = 'RestartVM'
+  RestartCommand = 'shutdown /f /r /t 60 /c "Packer Restart"'
+  RestartCheckCommand = 'powershell -command "& {Write-Output "restarted after software installed."}"'
+}
+$Customizer05 = New-AzImageBuilderCustomizerObject @ImgCustomParams
 
 # Phase 3: installing other packages
 $ImgCustomParams = @{
@@ -78,16 +86,6 @@ $ImgCustomParams = @{
   ScriptUri = "https://raw.githubusercontent.com/SchaapGuido/AIB/main/Script/InstallOthers.ps1"
 }
 $Customizer06 = New-AzImageBuilderCustomizerObject @ImgCustomParams
-
-<#
-$ImgCustomParams = @{
-  RestartCustomizer = $true
-  CustomizerName = 'RestartVM'
-  RestartCommand = 'shutdown /f /r /t 60 /c "Packer Restart"'
-  RestartCheckCommand = 'powershell -command "& {Write-Output "restarted after software installed."}"'
-}
-$Customizer07 = New-AzImageBuilderCustomizerObject @ImgCustomParams
-#>
 
 # Phase 4: Cleanup
 $ImgCustomParams = @{
@@ -104,7 +102,7 @@ $ImgTemplateParams = @{
   ResourceGroupName = $imageResourceGroup
   Source = $srcPlatform
   Distribute = $disSharedImg
-  Customize = $Customizer01,$Customizer02,$Customizer03,$Customizer04,$Customizer06,$Customizer08
+  Customize = $Customizer01,$Customizer02,$Customizer03,$Customizer04,$Customizer05,$Customizer06,$Customizer08
   Location = $location
   UserAssignedIdentityId = $userAssignedIdentity.Id
   VMProfileVmSize = 'Standard_D2s_v3'

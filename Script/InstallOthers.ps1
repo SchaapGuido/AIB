@@ -62,8 +62,4 @@ Expand-Archive -Path 'C:\temp\fslogix.zip' -DestinationPath 'C:\temp\fslogix\'  
 Start-Process -Wait -FilePath C:\temp\fslogix\x64\Release\FSLogixAppsSetup.exe -ArgumentList "/install /quiet /norestart"
 Write-Host '*** WVD AIB CUSTOMIZER PHASE *** INSTALL *** Install FSLogix *** - Exit Code: ' $LASTEXITCODE
 
-Invoke-WebRequest -uri 'https://github.com/The-Virtual-Desktop-Team/Virtual-Desktop-Optimization-Tool/archive/master.zip' -OutFile 'c:\temp\wvdoptool.zip'
-Expand-Archive -Path 'c:\temp\wvdoptool.zip' -DestinationPath 'C:\Temp'
-Start-Process -Wait -FilePath 'C:\Temp\Virtual-Desktop-Optimization-Tool-master\Win10_VirtualDesktop_Optimize.ps1' -ArgumentList 'WindowsVersion 2009 -verbose'
-
 Start-Sleep -Seconds 60
