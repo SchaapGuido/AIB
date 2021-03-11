@@ -2,7 +2,6 @@
 
 Select-AzSubscription -Subscription '92d0bf2b-bd52-4b00-b9b7-5969d1949ba0'
 
-#$imageResourceGroup = 'rg-management-p'
 $imageResourceGroup = 'rgwvdsys'
 $location = 'Westeurope'
 $imageTemplateName = 'Template-WVD-Images'
@@ -18,7 +17,7 @@ if ($result)
   Get-AzImageBuilderTemplate -Resourcegroupname $imageResourceGroup | Remove-AzImageBuilderTemplate
 }
 
-$userAssignedIdentity = Get-AzUserAssignedIdentity -ResourceGroupName $systemResourceGroup -Name $identityName
+$userAssignedIdentity = Get-AzUserAssignedIdentity -ResourceGroupName $imageResourceGroup -Name $identityName
 
 $SrcObjParams = @{
   SourceTypePlatformImage = $true
