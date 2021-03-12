@@ -43,15 +43,9 @@ $ImgCustomParams = @{
   PowerShellCustomizer = $true
   CustomizerName = 'Install_Language'
   RunElevated = $true
-  ScriptUri = "https://raw.githubusercontent.com/SchaapGuido/AIB/main/Script/InstallLang.ps1"
+  ScriptUri = "https://raw.githubusercontent.com/SchaapGuido/AIB/main/Script/InstallWvdOptTool.ps1"
 }
 $Customizer01 = New-AzImageBuilderCustomizerObject @ImgCustomParams
-
-$ImgUpdateParams = @{
-  WindowsUpdateCustomizer = $true
-  CustomizerName = 'WindowsUpdates'
-}
-$Customizer02 = New-AzImageBuilderCustomizerObject @ImgUpdateParams
 
 $ImgCustomParams = @{
   RestartCustomizer = $true
@@ -59,50 +53,14 @@ $ImgCustomParams = @{
   RestartCommand = 'shutdown /f /r /t 60 /c "Packer Restart"'
   RestartCheckCommand = 'powershell -command "& {Write-Output "restarted after Windows update."}"'
 }
-$Customizer03 = New-AzImageBuilderCustomizerObject @ImgCustomParams
-
-# Phase 2: installing Office, Teams and Wvd Optimization Tool
-$ImgCustomParams = @{
-  PowerShellCustomizer = $true
-  CustomizerName = 'InstallOfficeTeams'
-  RunElevated = $true
-  ScriptUri = "https://raw.githubusercontent.com/SchaapGuido/AIB/main/Script/InstallOffice.ps1"
-}
-$Customizer04 = New-AzImageBuilderCustomizerObject @ImgCustomParams
-
-$ImgCustomParams = @{
-  RestartCustomizer = $true
-  CustomizerName = 'RestartVM'
-  RestartCommand = 'shutdown /f /r /t 60 /c "Packer Restart"'
-  RestartCheckCommand = 'powershell -command "& {Write-Output "restarted after software installed."}"'
-}
-$Customizer05 = New-AzImageBuilderCustomizerObject @ImgCustomParams
-
-# Phase 3: installing other packages
-$ImgCustomParams = @{
-  PowerShellCustomizer = $true
-  CustomizerName = 'InstallOthers'
-  RunElevated = $true
-  ScriptUri = "https://raw.githubusercontent.com/SchaapGuido/AIB/main/Script/InstallOthers.ps1"
-}
-$Customizer06 = New-AzImageBuilderCustomizerObject @ImgCustomParams
-
-# Phase 4: Cleanup
-$ImgCustomParams = @{
-  PowerShellCustomizer = $true
-  CustomizerName = 'Cleanup'
-  RunElevated = $true
-  ScriptUri = "https://raw.githubusercontent.com/SchaapGuido/AIB/main/Script/Cleanup.ps1"
-}
-$Customizer08 = New-AzImageBuilderCustomizerObject @ImgCustomParams
-
+$Customizer02 = New-AzImageBuilderCustomizerObject @ImgCustomParams
 
 $ImgTemplateParams = @{
   ImageTemplateName = $imageTemplateName
   ResourceGroupName = $imageResourceGroup
   Source = $srcPlatform
   Distribute = $disSharedImg
-  Customize = $Customizer04
+  Customize = $Customizer01
   Location = $location
   UserAssignedIdentityId = $userAssignedIdentity.Id
   VMProfileVmSize = 'Standard_D2s_v3'
