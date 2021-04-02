@@ -2,6 +2,7 @@
 
 Select-AzSubscription -Subscription '92d0bf2b-bd52-4b00-b9b7-5969d1949ba0'
 
+Write-Host "Setting variables."
 $imageResourceGroup = 'rgwvdsys'
 $location = 'Westeurope'
 $imageTemplateName = 'Template-WVD-Images'
@@ -11,14 +12,18 @@ $identityName = "AzureImageBuilderUserIdentity"
 $myGalleryName = 'WvdImageGallery'
 $imageDefName = 'WvdAccImages'
 
+Write-Host "Checking if an old template exists"
 $result = Get-AzImageBuilderTemplate -Resourcegroupname $imageResourceGroup
 if ($result)
 {
+  Write-Host "Removing old template first."
   Get-AzImageBuilderTemplate -Resourcegroupname $imageResourceGroup | Remove-AzImageBuilderTemplate
 }
 
+Write-Host "Getting user assigned identity"
 $userAssignedIdentity = Get-AzUserAssignedIdentity -ResourceGroupName $imageResourceGroup -Name $identityName
 
+Write-Host "Setting parameters for AIB Source Object."
 $SrcObjParams = @{
   SourceTypePlatformImage = $true
   Publisher = 'MicrosoftWindowsDesktop'
@@ -28,6 +33,7 @@ $SrcObjParams = @{
 }
 $srcPlatform = New-AzImageBuilderSourceObject @SrcObjParams
 
+Write-Host "Setting parameters for AIB Distribution Object."
 $disObjParams = @{
   SharedImageDistributor = $true
   ArtifactTag = @{tag='dis-share'}
@@ -38,6 +44,7 @@ $disObjParams = @{
 }
 $disSharedImg = New-AzImageBuilderDistributorObject @disObjParams
 
+Write-Host "Setting parameters for 1st AIB Customizer Object."
 # Phase 1: installing language pack
 $ImgCustomParams = @{
   PowerShellCustomizer = $true
@@ -47,12 +54,14 @@ $ImgCustomParams = @{
 }
 $Customizer01 = New-AzImageBuilderCustomizerObject @ImgCustomParams
 
+Write-Host "Setting parameters for 2nd AIB Customizer Object."
 $ImgUpdateParams = @{
   WindowsUpdateCustomizer = $true
   CustomizerName = 'WindowsUpdates'
 }
 $Customizer02 = New-AzImageBuilderCustomizerObject @ImgUpdateParams
 
+Write-Host "Setting parameters for 3rd AIB Customizer Object."
 $ImgCustomParams = @{
   RestartCustomizer = $true
   CustomizerName = 'RestartVM'
@@ -61,6 +70,7 @@ $ImgCustomParams = @{
 }
 $Customizer03 = New-AzImageBuilderCustomizerObject @ImgCustomParams
 
+Write-Host "Setting parameters for 4th AIB Customizer Object."
 # Phase 2: installing Office, Teams and Wvd Optimization Tool
 $ImgCustomParams = @{
   PowerShellCustomizer = $true
@@ -70,6 +80,7 @@ $ImgCustomParams = @{
 }
 $Customizer04 = New-AzImageBuilderCustomizerObject @ImgCustomParams
 
+Write-Host "Setting parameters for 5th AIB Customizer Object."
 $ImgCustomParams = @{
   RestartCustomizer = $true
   CustomizerName = 'RestartVM'
@@ -78,6 +89,7 @@ $ImgCustomParams = @{
 }
 $Customizer05 = New-AzImageBuilderCustomizerObject @ImgCustomParams
 
+Write-Host "Setting parameters for 6th AIB Customizer Object."
 # Phase 3: installing other packages
 $ImgCustomParams = @{
   PowerShellCustomizer = $true
@@ -87,6 +99,7 @@ $ImgCustomParams = @{
 }
 $Customizer06 = New-AzImageBuilderCustomizerObject @ImgCustomParams
 
+Write-Host "Setting parameters for 7th AIB Customizer Object."
 # Phase 4: Cleanup
 $ImgCustomParams = @{
   PowerShellCustomizer = $true
@@ -96,7 +109,7 @@ $ImgCustomParams = @{
 }
 $Customizer08 = New-AzImageBuilderCustomizerObject @ImgCustomParams
 
-
+Write-Host "Creating AIB Template."
 $ImgTemplateParams = @{
   ImageTemplateName = $imageTemplateName
   ResourceGroupName = $imageResourceGroup
@@ -109,6 +122,7 @@ $ImgTemplateParams = @{
 }
 New-AzImageBuilderTemplate @ImgTemplateParams
 
+Write-Host "Getting status of AIB Template."
 $imageBuilderResult = Get-AzImageBuilderTemplate -ImageTemplateName $imageTemplateName -ResourceGroupName $imageResourceGroup
 
 $imageBuilderResult |
