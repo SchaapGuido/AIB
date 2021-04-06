@@ -65,7 +65,7 @@ Expand-Archive -Path 'c:\temp\wvdoptool.zip' -DestinationPath 'C:\Temp'
 Write-Host '* Switching to temp directory'
 Set-Location 'C:\Temp\Virtual-Desktop-Optimization-Tool-master'
 Write-Host '* Starting tool..'
-.\Win10_VirtualDesktop_Optimize.ps1 -WindowsVersion 2009 -verbose
+.\Win10_VirtualDesktop_Optimize.ps1 -WindowsVersion 2009 -verbose -Optimizations 'WindowsMediaPlayer','AppxPackages','ScheduledTasks','DefaultUserSettings','Autologgers','Services','LGPO','DiskCleanup'
 Write-Host '*** WVD AIB CUSTOMIZER PHASE *** INSTALL *** Run Wvd Optimization Tool *** - Exit Code: ' $LASTEXITCODE
 
 Write-Host '*** WVD AIB CUSTOMIZER PHASE *** INSTALL *** Install FSLogix ***'
