@@ -1,18 +1,6 @@
 Write-Host '*** WVD AIB CUSTOMIZER PHASE *** Stop the custimization when Error occurs ***'
 $ErroractionPreference='Stop'
 
-function Get-Installer($FileName)
-{
-    $uri = "https://raw.githubusercontent.com/SchaapGuido/AIB/main/Installers/" + $FileName
-    $out = "C:\Temp\" +  + $FileName
-    try {
-        Invoke-WebRequest -Uri $uri -OutFile $out -Verbose
-    }
-    catch {
-        Write-Warning "Unable to download file $Filename from $uri and save it to $out, $_"
-    }
-}
-
 Write-Host '*** WVD AIB CUSTOMIZER PHASE *** INSTALL *** Install Adobe Acrobat Reader ***'
 Invoke-WebRequest -Uri 'https://ardownload2.adobe.com/pub/adobe/reader/win/AcrobatDC/1900820071/AcroRdrDC1900820071_nl_NL.exe' -OutFile 'c:\temp\AcroRdrDC1900820071_nl_NL.exe'
 Start-Process -Wait 'c:\temp\AcroRdrDC1900820071_nl_NL.exe' -ArgumentList "/sAll /rs"
@@ -54,19 +42,19 @@ Start-Process -Wait -FilePath c:\temp\iview457_plugins_x64_setup.exe -ArgumentLi
 Write-Host '*** WVD AIB CUSTOMIZER PHASE *** INSTALL *** Install IrfanView Plugins *** - Exit Code: ' $LASTEXITCODE
 
 Write-Host '*** WVD AIB CUSTOMIZER PHASE *** INSTALL *** Install Microsoft To Do Provisioning App ***'
+Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/SchaapGuido/AIB/main/Installers/Microsoft.VCLibs.140.00_14.0.29231.0_x64__8wekyb3d8bbwe.Appx' -OutFile 'c:\temp\Microsoft.VCLibs.140.00_14.0.29231.0_x64__8wekyb3d8bbwe.Appx'
+Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/SchaapGuido/AIB/main/Installers/Microsoft.UI.Xaml.2.4_2.42007.9001.0_x64__8wekyb3d8bbwe.Appx' -OutFile 'c:\temp\Microsoft.UI.Xaml.2.4_2.42007.9001.0_x64__8wekyb3d8bbwe.Appx'
 Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/SchaapGuido/AIB/main/Installers/Microsoft.NET.Native.Framework.2.2_2.2.29512.0_x64__8wekyb3d8bbwe.Appx' -OutFile 'c:\temp\Microsoft.NET.Native.Framework.2.2_2.2.29512.0_x64__8wekyb3d8bbwe.Appx'
 Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/SchaapGuido/AIB/main/Installers/Microsoft.NET.Native.Runtime.2.2_2.2.28604.0_x64__8wekyb3d8bbwe.Appx' -OutFile 'c:\temp\Microsoft.NET.Native.Runtime.2.2_2.2.28604.0_x64__8wekyb3d8bbwe.Appx'
 Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/SchaapGuido/AIB/main/Installers/Microsoft.Todos_2.41.4902.0_neutral___8wekyb3d8bbwe.AppxBundle' -OutFile 'c:\temp\Microsoft.Todos_2.41.4902.0_neutral___8wekyb3d8bbwe.AppxBundle'
 Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/SchaapGuido/AIB/main/Installers/Microsoft.Todos_8wekyb3d8bbwe_b7add246-4cf8-3e59-4d3e-18da8ae3c88d.xml' -OutFile 'c:\temp\Microsoft.Todos_8wekyb3d8bbwe_b7add246-4cf8-3e59-4d3e-18da8ae3c88d.xml'
-Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/SchaapGuido/AIB/main/Installers/Microsoft.UI.Xaml.2.4_2.42007.9001.0_x64__8wekyb3d8bbwe.Appx' -OutFile 'c:\temp\Microsoft.UI.Xaml.2.4_2.42007.9001.0_x64__8wekyb3d8bbwe.Appx'
-Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/SchaapGuido/AIB/main/Installers/Microsoft.VCLibs.140.00_14.0.29231.0_x64__8wekyb3d8bbwe.Appx' -OutFile 'c:\temp\Microsoft.VCLibs.140.00_14.0.29231.0_x64__8wekyb3d8bbwe.Appx'
 $depPackages = ('C:\Temp\Microsoft.VCLibs.140.00_14.0.29231.0_x64__8wekyb3d8bbwe.Appx',
     'C:\Temp\Microsoft.UI.Xaml.2.4_2.42007.9001.0_x64__8wekyb3d8bbwe.Appx',
     'C:\Temp\Microsoft.NET.Native.Framework.2.2_2.2.29512.0_x64__8wekyb3d8bbwe.Appx',
     'C:\Temp\Microsoft.NET.Native.Runtime.2.2_2.2.28604.0_x64__8wekyb3d8bbwe.Appx')
-$packagePath = 'C:\Temp\Microsoft.Todos_2.39.4622.0_neutral___8wekyb3d8bbwe.AppxBundle'
-$licenseFile = 'c:\temp\Microsoft.Todos_8wekyb3d8bbwe_b7add246-4cf8-3e59-4d3e-18da8ae3c88d.xml'
-Add-AppxProvisionedPackage -Online -PackagePath $packagePath -DependencyPackagePath $depPackages -LicensePath $licenseFile
+$packagePath = 'C:\Temp\Microsoft.Todos_2.41.4902.0_neutral___8wekyb3d8bbwe.AppxBundle'
+$licensePath = 'C:\Temp\Microsoft.Todos_8wekyb3d8bbwe_b7add246-4cf8-3e59-4d3e-18da8ae3c88d.xml'
+Add-AppxProvisionedPackage -Online -PackagePath $packagePath -DependencyPackagePath $depPackages -LicensePath $licensePath
 Write-Host '*** WVD AIB CUSTOMIZER PHASE *** INSTALL *** Install Microsoft To Do Provisioning App *** - Exit Code: ' $LASTEXITCODE
 
 <#
