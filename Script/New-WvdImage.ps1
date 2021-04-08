@@ -1,4 +1,5 @@
-﻿Connect-AzAccount
+﻿Write-Host "Log in with an Azure account"
+Connect-AzAccount
 
 Select-AzSubscription -Subscription '92d0bf2b-bd52-4b00-b9b7-5969d1949ba0'
 
