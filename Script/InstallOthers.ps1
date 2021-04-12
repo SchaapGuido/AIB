@@ -41,6 +41,7 @@ Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/SchaapGuido/AIB/main/I
 Start-Process -Wait -FilePath c:\temp\iview457_plugins_x64_setup.exe -ArgumentList "/silent /allusers=1"
 Write-Host '*** WVD AIB CUSTOMIZER PHASE *** INSTALL *** Install IrfanView Plugins *** - Exit Code: ' $LASTEXITCODE
 
+<#
 Write-Host '*** WVD AIB CUSTOMIZER PHASE *** INSTALL *** Install Microsoft To Do Provisioning App ***'
 Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/SchaapGuido/AIB/main/Installers/Microsoft.VCLibs.140.00_14.0.29231.0_x64__8wekyb3d8bbwe.Appx' -OutFile 'c:\temp\Microsoft.VCLibs.140.00_14.0.29231.0_x64__8wekyb3d8bbwe.Appx'
 Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/SchaapGuido/AIB/main/Installers/Microsoft.UI.Xaml.2.4_2.42007.9001.0_x64__8wekyb3d8bbwe.Appx' -OutFile 'c:\temp\Microsoft.UI.Xaml.2.4_2.42007.9001.0_x64__8wekyb3d8bbwe.Appx'
@@ -56,8 +57,8 @@ $packagePath = 'C:\Temp\Microsoft.Todos_2.41.4902.0_neutral___8wekyb3d8bbwe.Appx
 $licensePath = 'C:\Temp\Microsoft.Todos_8wekyb3d8bbwe_b7add246-4cf8-3e59-4d3e-18da8ae3c88d.xml'
 Add-AppxProvisionedPackage -Online -PackagePath $packagePath -DependencyPackagePath $depPackages -LicensePath $licensePath
 Write-Host '*** WVD AIB CUSTOMIZER PHASE *** INSTALL *** Install Microsoft To Do Provisioning App *** - Exit Code: ' $LASTEXITCODE
+#>
 
-<#
 Write-Host '*** WVD AIB CUSTOMIZER PHASE *** INSTALL *** Run Wvd Optimization Tool ***'
 Write-Host '* Downloading...'
 Invoke-WebRequest -uri 'https://github.com/The-Virtual-Desktop-Team/Virtual-Desktop-Optimization-Tool/archive/master.zip' -OutFile 'c:\temp\wvdoptool.zip'
@@ -68,7 +69,6 @@ Set-Location 'C:\Temp\Virtual-Desktop-Optimization-Tool-master'
 Write-Host '* Starting tool..'
 .\Win10_VirtualDesktop_Optimize.ps1 -WindowsVersion 2009 -verbose -Optimizations 'WindowsMediaPlayer','AppxPackages','ScheduledTasks','DefaultUserSettings','Autologgers','Services','LGPO','DiskCleanup'
 Write-Host '*** WVD AIB CUSTOMIZER PHASE *** INSTALL *** Run Wvd Optimization Tool *** - Exit Code: ' $LASTEXITCODE
-#>
 
 Write-Host '*** WVD AIB CUSTOMIZER PHASE *** INSTALL *** Install FSLogix ***'
 # Note: Settings for FSLogix can be configured through GPO's)
