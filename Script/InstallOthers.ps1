@@ -57,7 +57,6 @@ $packagePath = 'C:\Temp\Microsoft.Todos_2.41.4902.0_neutral___8wekyb3d8bbwe.Appx
 $licensePath = 'C:\Temp\Microsoft.Todos_8wekyb3d8bbwe_b7add246-4cf8-3e59-4d3e-18da8ae3c88d.xml'
 Add-AppxProvisionedPackage -Online -PackagePath $packagePath -DependencyPackagePath $depPackages -LicensePath $licensePath
 Write-Host '*** WVD AIB CUSTOMIZER PHASE *** INSTALL *** Install Microsoft To Do Provisioning App *** - Exit Code: ' $LASTEXITCODE
-#>
 
 Write-Host '*** WVD AIB CUSTOMIZER PHASE *** INSTALL *** Run Wvd Optimization Tool ***'
 Write-Host '* Downloading...'
@@ -69,6 +68,7 @@ Set-Location 'C:\Temp\Virtual-Desktop-Optimization-Tool-master'
 Write-Host '* Starting tool..'
 .\Win10_VirtualDesktop_Optimize.ps1 -WindowsVersion 2009 -verbose -Optimizations 'WindowsMediaPlayer','AppxPackages','ScheduledTasks','DefaultUserSettings','Autologgers','Services','LGPO','DiskCleanup'
 Write-Host '*** WVD AIB CUSTOMIZER PHASE *** INSTALL *** Run Wvd Optimization Tool *** - Exit Code: ' $LASTEXITCODE
+#>
 
 Write-Host '*** WVD AIB CUSTOMIZER PHASE *** INSTALL *** Install FSLogix ***'
 # Note: Settings for FSLogix can be configured through GPO's)
